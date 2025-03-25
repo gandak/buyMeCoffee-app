@@ -6,6 +6,7 @@ import React, {
   ChangeEventHandler,
   Dispatch,
   SetStateAction,
+  useEffect,
   useState,
 } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,26 +39,43 @@ const formSchema = z.object({
 });
 
 export const StepOne = ({ currentStep }: { currentStep: number }) => {
+  // const [isAvailable, setIsAvailable] = useState<boolean>(true);
+  const [username, setUsername] = useState<string>("");
   const router = useRouter();
+
+  useEffect(() => {
+    const defaultVal = localStorage.getItem("username");
+    if (defaultVal) setUsername(defaultVal);
+  }, []);
+
+  console.log(username);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      username: username,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const isAvailable = checkUsername(values.username);
-    if (isAvailable) router.push(`?step=${currentStep + 1}`);
+    // const result = checkUsername(values.username);
+    // if (result) setIsAvailable(!isAvailable);
+    // if (!result) {
+    localStorage.setItem("username", values.username);
+    router.push(`?step=${currentStep + 1}`);
+    // }
   }
 
-  const checkValue = (e: React.ChangeEvent<HTMLInputElement>) => {};
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8 w-[400px]"
+      >
         <FormField
           control={form.control}
           name="username"
+          defaultValue={username}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="font-bold text-[24px]">
@@ -69,16 +87,24 @@ export const StepOne = ({ currentStep }: { currentStep: number }) => {
               <FormControl>
                 <Input placeholder="Enter username here" {...field} />
               </FormControl>
+              {/* {isAvailable ? (
+                ""
+              ) : (
+                <p className="text-[12px] text-red-500">
+                  Username not availabe
+                </p>
+              )} */}
               <FormMessage />
             </FormItem>
           )}
         />
+
         <Button type="submit" className="w-full ">
-          Submit
+          Continue
         </Button>
         <div className="flex gap-4 justify-center">
           <p>Already have an account?</p>
-          <Link href="/login" className="text-[#2563EB]">
+          <Link href="/signin" className="text-[#2563EB]">
             Log in
           </Link>
         </div>

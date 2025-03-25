@@ -36,8 +36,7 @@ const Page = () => {
     <div className="flex gap-4 items-center justify-center w-[50%]">
       <FormSteps
         currentStep={step}
-        setEmail={setUsername}
-        email={username}
+
         // value={userInfo}
         // error={errorMessage}
       />

@@ -23,7 +23,7 @@ export type BankCard = {
   firstName: string;
   lastName: string;
   cardNumber: string;
-  expiryDate: Date;
+  expiryDate: string;
   userId: number;
 };
 
@@ -32,7 +32,7 @@ export type UserType = {
   email: string;
   password: string;
   username: string;
-  receivedDonations: DonationType;
-  profile: Profile;
-  bankCard: BankCard;
+  receivedDonations: DonationType[];
+  // profile: Profile;
+  bankCard: BankCard[];
 };

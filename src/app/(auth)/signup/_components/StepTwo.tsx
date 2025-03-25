@@ -24,38 +24,34 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox";
 
-const formSchema = z
-  .object({
-    password: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters long." })
-      .refine((password) => /[A-Z]/.test(password), {
-        message: "Password must include at least one uppercase letter.",
-      })
-      .refine((password) => /[a-z]/.test(password), {
-        message: "Password must include at least one lowercase letter.",
-      })
-      .refine((password) => /[0-9]/.test(password), {
-        message: "Password must include at least one number.",
-      }),
-    confirm: z.string(),
-    email: z.string(),
-  })
-  .refine((data) => data.password === data.confirm, {
-    message: "Passwords don't match",
-    path: ["confirm"],
-  });
+const formSchema = z.object({
+  email: z.string().email(),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters long." })
+    .refine((password) => /[A-Z]/.test(password), {
+      message: "Password must include at least one uppercase letter.",
+    })
+    .refine((password) => /[a-z]/.test(password), {
+      message: "Password must include at least one lowercase letter.",
+    })
+    .refine((password) => /[0-9]/.test(password), {
+      message: "Password must include at least one number.",
+    }),
+});
 
 export const StepTwo = ({ currentStep }: { currentStep: number }) => {
   const [isView, setIsView] = useState(false);
   const router = useRouter();
 
+  const username = localStorage.getItem("username");
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       //   username: username,
+      email: "",
       password: "",
-      confirm: "",
     },
   });
 
@@ -89,45 +85,58 @@ export const StepTwo = ({ currentStep }: { currentStep: number }) => {
         {" "}
         <ChevronLeft className="w-[15px] h-[15px]" />
       </Button>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4 w-[400px]"
+      >
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem className="flex flex-col gap-4">
+              <div className="flex flex-col ">
+                <FormLabel className="font-bold text-[24px]">
+                  Welcome, {username}
+                </FormLabel>
+                <FormDescription className="text-[16px] text-[#71717A]">
+                  Connect email and set a password
+                </FormDescription>
+              </div>
+              <FormControl>
+                <div>
+                  <p>Email</p>
+                  <Input
+                    type="email"
+                    placeholder="Enter email here"
+                    {...field}
+                  />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="font-bold text-[24px]">
-                Create a strong password
-              </FormLabel>
-              <FormDescription className="text-[16px] text-[#71717A]">
-                Create a strong password with letters, numbers.
-              </FormDescription>
               <FormControl>
-                <Input
-                  type={isView ? "text" : "password"}
-                  placeholder="Password"
-                  {...field}
-                />
+                <div>
+                  <p>Password</p>
+                  <Input
+                    type={isView ? "text" : "password"}
+                    placeholder="Password"
+                    {...field}
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="confirm"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input
-                  type={isView ? "text" : "password"}
-                  placeholder="Confirm"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <div className="flex items-center space-x-2">
           <Checkbox
             id="password"
@@ -147,7 +156,7 @@ export const StepTwo = ({ currentStep }: { currentStep: number }) => {
         </Button>
         <div className="flex gap-4 justify-center">
           <p>Already have an account?</p>
-          <Link href="/login" className="text-[#2563EB]">
+          <Link href="/signin" className="text-[#2563EB]">
             Log in
           </Link>
         </div>
