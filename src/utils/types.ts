@@ -15,6 +15,7 @@ export type Profile = {
   socialMediaURL: string;
   backgroundImage: string;
   userId: number;
+  successMessage: string;
 };
 
 export type BankCard = {
@@ -33,6 +34,6 @@ export type UserType = {
   password: string;
   username: string;
   receivedDonations: DonationType[];
-  // profile: Profile;
+  profile: Profile;
   bankCard: BankCard[];
 };

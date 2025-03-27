@@ -1,6 +1,5 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,11 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-
-type UserLoginType = {
-  email: string;
-  password: string;
-};
+import { useUser } from "@/app/_context/UserContext";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -31,6 +26,7 @@ const formSchema = z.object({
 });
 
 const LoginSection = () => {
+  const { loginUser } = useUser();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,26 +41,8 @@ const LoginSection = () => {
     password: string;
   };
 
-  const loginUser = async (values: UserLoginType) => {
-    const response = await fetch("http://localhost:4000/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: values.email,
-        password: values.password,
-      }),
-    });
-
-    const jsonData = await response.json();
-    if (jsonData.email) router.push("/");
-    return jsonData;
-  };
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    alert("Amjilttai nevterlee!");
-    router.push("/profile");
+    loginUser(values.email, values.password);
   }
 
   return (
