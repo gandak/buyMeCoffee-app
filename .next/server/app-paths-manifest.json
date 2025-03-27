@@ -1,4 +1,0 @@
-{
-  "/(auth)/profile/explore/page": "app/(auth)/profile/explore/page.js",
-  "/(auth)/profile/page": "app/(auth)/profile/page.js"
-}
