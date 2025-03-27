@@ -6,10 +6,15 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/(auth)/signin/page": [
+    "/(auth)/createprofilez/loading": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(auth)/signin/page.js"
+      "static/chunks/app/(auth)/createprofilez/loading.js"
+    ],
+    "/(auth)/createprofilez/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(auth)/createprofilez/page.js"
     ],
     "/(auth)/profile/layout": [
       "static/chunks/webpack.js",
@@ -21,20 +26,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(auth)/profile/page.js"
     ],
-    "/page": [
+    "/(auth)/profile/explore/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
-    ],
-    "/(auth)/createprofilez/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(auth)/createprofilez/page.js"
-    ],
-    "/(auth)/createprofilez/loading": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(auth)/createprofilez/loading.js"
+      "static/chunks/app/(auth)/profile/explore/page.js"
     ]
   }
 }

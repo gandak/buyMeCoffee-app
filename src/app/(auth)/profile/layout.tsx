@@ -1,9 +1,15 @@
-import React from "react";
+import React, { ReactNode } from "react";
+import { Sidebar } from "./_components/Sidebar";
 
-const layout = () => {
+type Props = {
+  children: ReactNode;
+};
+
+const layout = (props: Props) => {
   return (
-    <div className="bg-black h-[100vh] w-[20%] text-white flex flex-col items-center">
-      layout
+    <div className="flex w-screen pt-24 justify-between">
+      <Sidebar />
+      <div className="w-[80%]">{props.children}</div>
     </div>
   );
 };
