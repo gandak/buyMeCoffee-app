@@ -12,7 +12,7 @@ import React, {
 type UserContextType = {
   loginUser: (email: string, password: string) => void;
   users: UserType[];
-  loggedUser: string | null;
+  loggedUser: UserType | null;
   logoutHandler: () => void;
 };
 
@@ -21,7 +21,7 @@ export const useUser = () => useContext(userContext);
 
 const UsersProvider = ({ children }: { children: ReactNode }) => {
   const [users, setUsers] = useState<UserType[]>([]);
-  const [loggedUser, setLoggedUser] = useState<string | null>(null);
+  const [loggedUser, setLoggedUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -29,13 +29,59 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
     const storedUser = localStorage.getItem("userId");
 
     if (storedUser) {
-      setLoggedUser(storedUser);
-      router.replace("/");
+      const fetchUserById = async () => {
+        try {
+          const response = await fetch(`/api/users?userId=${storedUser}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch user data");
+          }
+
+          const data = await response.json();
+
+          console.log("Fetch use data by ID: ", data);
+
+          if (data.error) {
+            console.error(data.message);
+            localStorage.removeItem("userId");
+            router.replace("/signin");
+          } else {
+            setLoggedUser(data.data);
+          }
+        } catch (error) {
+          console.error("Error fetching user:", error);
+          localStorage.removeItem("userId");
+          router.replace("/signin");
+        }
+      };
+
+      const fetchAllUsers = async () => {
+        try {
+          const response = await fetch("/api/users", {
+            method: "GET",
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            setUsers(data.data || []);
+          }
+        } catch (error) {
+          console.error("Error fetching all users:", error);
+        }
+      };
+
+      fetchUserById();
+      fetchAllUsers();
     } else {
       router.replace("/signin");
     }
     setLoading(false);
-  }, []);
+  }, [router]);
 
   const loginUser = async (email: string, password: string) => {
     try {
@@ -53,8 +99,8 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
         alert(data.foundUser.message);
       } else {
         localStorage.setItem("userId", data.foundUser._id);
-        setLoggedUser(data.foundUser._id);
-        router.push("/");
+        setLoggedUser(data.foundUser);
+        router.push("/user/" + data.foundUser._id);
       }
     } catch (error) {
       console.error("Login failed:", error);

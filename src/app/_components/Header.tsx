@@ -12,10 +12,14 @@ import {
 } from "@/components/ui/popover";
 import { ChevronDown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserType } from "@/utils/types";
 
 export const Header = () => {
-  const { loggedUser, logoutHandler } = useUser();
-  console.log(loggedUser);
+  const { loggedUser, logoutHandler } = useUser() as {
+    loggedUser: UserType | null;
+    logoutHandler: () => void;
+  };
+
   const pathname = usePathname();
   const router = useRouter();
 
@@ -37,7 +41,7 @@ export const Header = () => {
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <p>USER</p>
+              <p>{loggedUser.username}</p>
             </div>
             <Popover>
               <PopoverTrigger>

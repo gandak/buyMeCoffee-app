@@ -12,7 +12,7 @@ export const getUsers = async (): Promise<UserType[]> => {
           _id: 1,
           amount: 5,
           specialMessage: "Demjdeg shuu",
-          socialURLOrByMeCoffee: "Guest",
+          socialURLOrByMeCoffee: "http://www.instagram.com/kiki",
           donorId: 2,
           recipientId: 1,
         },

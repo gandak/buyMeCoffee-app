@@ -4,20 +4,17 @@ import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export function CopyButton({ value = "" }) {
+export function CopyButton({ value }: { value: number | undefined }) {
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = () => {
     if (!value) return;
 
-    // Use the clipboard API with proper error handling
     navigator.clipboard
-      .writeText(value)
+      .writeText("localhost:3000/user/" + JSON.stringify(value))
       .then(() => {
-        // Success - update state to show copied
         setCopied(true);
 
-        // Reset after 2 seconds
         setTimeout(() => {
           setCopied(false);
         }, 2000);

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -41,8 +41,14 @@ const dollarAmounts = [
   },
 ] as const;
 
-export const AmountEarnings = () => {
-  const [selectedAmounts, setSelectedAmounts] = useState<string[]>([]);
+export const AmountEarnings = ({
+  selectedAmounts,
+  setSelectedAmounts,
+}: {
+  selectedAmounts: string[];
+  setSelectedAmounts: Dispatch<SetStateAction<string[]>>;
+}) => {
+  // const [selectedAmounts, setSelectedAmounts] = useState<string[]>([]);
 
   // Handle checkbox change
   const handleCheckboxChange = (id: string, checked: boolean) => {
