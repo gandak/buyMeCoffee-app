@@ -1,6 +1,6 @@
 "use client";
 import { UserType } from "@/utils/types";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, {
   createContext,
   ReactNode,
@@ -14,6 +14,7 @@ type UserContextType = {
   users: UserType[];
   loggedUser: UserType | null;
   logoutHandler: () => void;
+  user: UserType | null;
 };
 
 const userContext = createContext<UserContextType>({} as UserContextType);
@@ -21,15 +22,17 @@ export const useUser = () => useContext(userContext);
 
 const UsersProvider = ({ children }: { children: ReactNode }) => {
   const [users, setUsers] = useState<UserType[]>([]);
+  const [user, setUser] = useState<UserType | null>(null);
   const [loggedUser, setLoggedUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const params = useParams<{ userId: string }>();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("userId");
 
-    if (storedUser) {
-      const fetchUserById = async () => {
+    const fetchLoggedUser = async () => {
+      if (storedUser) {
         try {
           const response = await fetch(`/api/users?userId=${storedUser}`, {
             method: "GET",
@@ -58,30 +61,63 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
           localStorage.removeItem("userId");
           router.replace("/signin");
         }
-      };
+      }
+    };
 
-      const fetchAllUsers = async () => {
-        try {
-          const response = await fetch("/api/users", {
-            method: "GET",
-          });
+    fetchLoggedUser();
 
-          if (response.ok) {
-            const data = await response.json();
-            setUsers(data.data || []);
-          }
-        } catch (error) {
-          console.error("Error fetching all users:", error);
+    const fetchAllUsers = async () => {
+      try {
+        const response = await fetch("/api/users", {
+          method: "GET",
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUsers(data.data || []);
         }
-      };
+      } catch (error) {
+        console.error("Error fetching all users:", error);
+      }
+    };
 
-      fetchUserById();
-      fetchAllUsers();
-    } else {
-      router.replace("/signin");
-    }
+    fetchAllUsers();
+
     setLoading(false);
   }, [router]);
+
+  useEffect(() => {
+    const fetchUserById = async () => {
+      if (!params?.userId) return;
+
+      try {
+        const response = await fetch(`/api/users?userId=${params.userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+
+        const data = await response.json();
+
+        if (data.error) {
+          console.error(data.message);
+          setUser(null);
+        } else {
+          setUser(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        setUser(null);
+      }
+    };
+
+    fetchUserById();
+  }, [params.userId]); // 👈 Now it updates whenever `params.userId` changes
 
   const loginUser = async (email: string, password: string) => {
     try {
@@ -100,7 +136,7 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
       } else {
         localStorage.setItem("userId", data.foundUser._id);
         setLoggedUser(data.foundUser);
-        router.push("/user/" + data.foundUser._id);
+        router.push("/dashboard/user/" + data.foundUser._id);
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -122,7 +158,7 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <userContext.Provider
-      value={{ loginUser, users, loggedUser, logoutHandler }}
+      value={{ loginUser, users, user, loggedUser, logoutHandler }}
     >
       {children}
     </userContext.Provider>

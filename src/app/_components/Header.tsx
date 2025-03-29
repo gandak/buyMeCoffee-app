@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useUser } from "../_context/UserContext";
 import {
   Popover,
@@ -26,7 +26,7 @@ export const Header = () => {
   const isUser = pathname === "/signin";
 
   return (
-    <div className="absolute top-6 flex px-20 w-full">
+    <div className="absolute flex px-20 w-full bg-white h-[56px]">
       <div className="flex justify-between w-full items-center">
         <Link href="/">
           <Image alt="" src={"/logo.svg"} width={147} height={20}></Image>

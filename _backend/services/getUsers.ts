@@ -1,4 +1,4 @@
-import { UserType } from "@/utils/types";
+import { DonationType, UserType } from "@/utils/types";
 
 export const getUsers = async (): Promise<UserType[]> => {
   return [
@@ -7,26 +7,19 @@ export const getUsers = async (): Promise<UserType[]> => {
       email: "gandak0930@gmail.com",
       password: "1234",
       username: "gandak",
-      receivedDonations: [
-        {
-          _id: 1,
-          amount: 5,
-          specialMessage: "Demjdeg shuu",
-          socialURLOrByMeCoffee: "http://www.instagram.com/kiki",
-          donorId: 2,
-          recipientId: 1,
-        },
-      ],
+      receivedDonations: null,
       profile: {
         _id: 1,
         name: "Ganzorig Gombo",
-        about: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        about:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
         avatarImage: "https://github.com/shadcn.png",
         socialMediaURL: "https://www.facebook.com/gandak0930",
         backgroundImage:
           "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
         successMessage: "Thank you for your support!",
         userId: 1,
+        coverImg: "",
       },
       bankCard: [
         {
@@ -48,11 +41,21 @@ export const getUsers = async (): Promise<UserType[]> => {
       receivedDonations: [
         {
           _id: 1,
+          name: "Guest",
           amount: 10,
           specialMessage: "Mundag daa",
           socialURLOrByMeCoffee: "Guest",
+          donorImage: "",
           donorId: 1,
           recipientId: 2,
+          createdAt: new Date("2025-01-05T12:00:00Z"),
+          updatedAt: new Date("2025-01-05T12:00:00Z"),
+          reduce: function (
+            arg0: (acc: number, donation: DonationType) => number,
+            arg1: number
+          ): unknown {
+            throw new Error("Function not implemented.");
+          },
         },
       ],
       profile: {
@@ -65,6 +68,7 @@ export const getUsers = async (): Promise<UserType[]> => {
           "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
         successMessage: "Thank you!",
         userId: 1,
+        coverImg: "",
       },
       bankCard: [
         {
@@ -85,12 +89,58 @@ export const getUsers = async (): Promise<UserType[]> => {
       username: "Chimegee",
       receivedDonations: [
         {
-          _id: 1,
-          amount: 2,
-          specialMessage: "Huurhun shuu",
+          _id: 3,
+          name: "Guest",
+          amount: 5,
+          specialMessage: "Mundag",
           socialURLOrByMeCoffee: "Guest",
-          donorId: 4,
-          recipientId: 3,
+          donorImage: "",
+          donorId: 1,
+          recipientId: 2,
+          createdAt: new Date("2025-03-05T12:00:00Z"),
+          updatedAt: new Date("2025-03-05T12:00:00Z"),
+          reduce: function (
+            arg0: (acc: number, donation: DonationType) => number,
+            arg1: number
+          ): unknown {
+            throw new Error("Function not implemented.");
+          },
+        },
+        {
+          _id: 5,
+          name: "Guest",
+          amount: 10,
+          specialMessage: "Hicheegeerei",
+          socialURLOrByMeCoffee: "Guest",
+          donorImage: "",
+          donorId: 6,
+          recipientId: 2,
+          createdAt: new Date("2025-03-08T12:00:00Z"),
+          updatedAt: new Date("2025-03-08T12:00:00Z"),
+          reduce: function (
+            arg0: (acc: number, donation: DonationType) => number,
+            arg1: number
+          ): unknown {
+            throw new Error("Function not implemented.");
+          },
+        },
+        {
+          _id: 6,
+          name: "Guest",
+          amount: 1,
+          specialMessage: "Hicheegeerei guys",
+          socialURLOrByMeCoffee: "Guest",
+          donorImage: "",
+          donorId: 6,
+          recipientId: 2,
+          createdAt: new Date("2025-03-15T12:00:00Z"),
+          updatedAt: new Date("2025-03-15T12:00:00Z"),
+          reduce: function (
+            arg0: (acc: number, donation: DonationType) => number,
+            arg1: number
+          ): unknown {
+            throw new Error("Function not implemented.");
+          },
         },
       ],
       profile: {
@@ -103,6 +153,7 @@ export const getUsers = async (): Promise<UserType[]> => {
           "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
         successMessage: "Thanks for your support!",
         userId: 1,
+        coverImg: "",
       },
       bankCard: [
         {

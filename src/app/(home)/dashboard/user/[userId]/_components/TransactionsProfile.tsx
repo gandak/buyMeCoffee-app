@@ -16,7 +16,7 @@ export const TransactionsProfile = () => {
         />
       </div>
       <div className="flex flex-col p-6 border-1 rounded-md border-[#E4E4E7] ">
-        <DonorSection selectedAmounts={selectedAmount}/>
+        <DonorSection selectedAmounts={selectedAmount} />
       </div>
     </div>
   );
