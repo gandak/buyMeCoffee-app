@@ -1,45 +1,57 @@
 "use client";
 
-import React from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { UserType } from "@/utils/types";
+import type { UserType } from "@/utils/types";
 import { useUser } from "@/app/_context/UserContext";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import ExpandableText from "@/app/(home)/dashboard/user/[userId]/_components/ExpandableText";
 import { Coffee, Heart } from "lucide-react";
 import RecentSupporters from "./_components/RecentSupporters";
-import { Donations } from "./_components/Donations";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { EditProfilebutton } from "./_components/EditProfilebutton";
 
 const formSchema = z.object({
   donation: z.string({
-    message: "Username must be at least 2 characters.",
+    message: "You must choose a number to donate",
   }),
-  socialMediaURL: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+  socialMediaURL: z.string().url({
+    message: "You must insert your social media URL",
   }),
   specialMessage: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+    message: "Special message must be at least 2 characters.",
   }),
 });
 
 const userProfile = () => {
+  const [open, setOpen] = useState(false);
+  const [formValues, setFormValues] = useState<z.infer<
+    typeof formSchema
+  > | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -68,14 +80,22 @@ const userProfile = () => {
     ? [...user.receivedDonations].reverse()
     : [];
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log("values: ", values);
+  function onValidateForm(values: z.infer<typeof formSchema>) {
+    setFormValues(values);
+    setOpen(true);
+  }
+
+  function onFinalSubmit() {
+    if (formValues) {
+      console.log("Values:", formValues);
+
+      setOpen(false);
+      form.reset();
+    }
   }
 
   return (
-    <div className="flex flex-col gap-6  pt-6 ">
+    <div className="flex items-center flex-col gap-6  pt-6 ">
       <div>
         {user?.profile.coverImg ? (
           <Image
@@ -89,22 +109,22 @@ const userProfile = () => {
           <div className=" w-screen h-[320px] bg-[#4FBDA1]"></div>
         )}
       </div>
-      <div className="flex  gap-4 max-w-[1264px] m-auto w-full items-start absolute mt-60 rounded-md p-6">
+      <div className="flex gap-4 max-w-[1264px] w-full items-start absolute mt-60 rounded-md p-6">
         <div className="w-[50%] flex flex-col gap-4">
           <div className="w-full flex flex-col gap-4 bg-white rounded-lg border-1">
             <div className="flex flex-col gap-4 p-6 ">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                   <Image
                     alt=""
-                    src={user?.profile.avatarImage}
+                    src={user?.profile.avatarImage || "/placeholder.svg"}
                     width={40}
                     height={40}
                     className="rounded-full"
                   />
                   <h2 className="font-bold">{user?.profile.name}</h2>
                 </div>
-                {loggedUser && <Button>Edit page</Button>}
+                <EditProfilebutton />
               </div>
               <div className="border-1"></div>
               <div>
@@ -127,12 +147,6 @@ const userProfile = () => {
               <h3 className="font-bold">Recent supporters</h3>
               {user.receivedDonations ? (
                 <div className="flex gap-4">
-                  {/* <h2 className="font-bold text-[14px]">
-                    {latestDonors[0].name} bought ${latestDonors[0].amount}
-                  </h2>
-                  <p className="text-[14px]">
-                    {latestDonors[0].specialMessage}
-                  </p> */}
                   <RecentSupporters latestDonors={latestDonors} />
                 </div>
               ) : (
@@ -150,7 +164,10 @@ const userProfile = () => {
           </h1>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form
+              onSubmit={form.handleSubmit(onValidateForm)}
+              className="space-y-8"
+            >
               <FormField
                 control={form.control}
                 name="donation"
@@ -233,7 +250,33 @@ const userProfile = () => {
                 )}
               />
 
-              <Button type="submit">Submit</Button>
+              <Button variant="default" type="submit" className="w-full">
+                Support
+              </Button>
+
+              <AlertDialog open={open} onOpenChange={setOpen}>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-center text-[30px]">
+                      Scan QR code
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="flex flex-col items-center gap-8">
+                      Scan the QR code to complete your donation
+                      <Image
+                        alt=""
+                        src="/qr-line.svg"
+                        width={246}
+                        height={246}
+                      ></Image>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter className="flex justify-center">
+                    <Button type="button" onClick={onFinalSubmit}>
+                      Click if paid
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </form>
           </Form>
         </div>

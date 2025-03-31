@@ -29,7 +29,13 @@ export const Header = () => {
     <div className="absolute flex px-20 w-full bg-white h-[56px]">
       <div className="flex justify-between w-full items-center">
         <Link href="/">
-          <Image alt="" src={"/logo.svg"} width={147} height={20}></Image>
+          <Image
+            alt=""
+            src={"/logo.svg"}
+            priority={true}
+            width={147}
+            height={20}
+          ></Image>
         </Link>
         {loggedUser ? (
           <div className="flex gap-2 py-2 px-4 items-center w-[187px] h-[40px] justify-between">
