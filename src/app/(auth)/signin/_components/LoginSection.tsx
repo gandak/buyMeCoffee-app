@@ -105,7 +105,11 @@ const LoginSection = () => {
             Forgot password?
           </Link>
 
-          <Button type="submit" className="w-full opacity-20 hover:opacity-100">
+          <Button
+            variant="default"
+            type="submit"
+            className="w-full  hover:opacity-100"
+          >
             Submit
           </Button>
           <div className="flex gap-4 justify-center">

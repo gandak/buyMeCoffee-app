@@ -17,7 +17,8 @@ export const getUsers = async (): Promise<UserType[]> => {
         socialMediaURL: "https://www.facebook.com/gandak0930",
         backgroundImage:
           "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
-        successMessage: "Thank you for your support!",
+        successMessage:
+          "Thank you for supporting me! It means a lot to have your support. It’s a step toward creating a more inclusive and accepting community of artists.",
         userId: 1,
         coverImg: "",
       },
@@ -66,7 +67,8 @@ export const getUsers = async (): Promise<UserType[]> => {
         socialMediaURL: "https://www.facebook.com/bolddorj",
         backgroundImage:
           "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
-        successMessage: "Thank you!",
+        successMessage:
+          "Thank you for supporting me! It means a lot to have your support. It’s a step toward creating a more inclusive and accepting community of artists.",
         userId: 1,
         coverImg: "",
       },
@@ -151,7 +153,8 @@ export const getUsers = async (): Promise<UserType[]> => {
         socialMediaURL: "https://www.facebook.com/chimeg",
         backgroundImage:
           "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
-        successMessage: "Thanks for your support!",
+        successMessage:
+          "Thank you for supporting me! It means a lot to have your support. It’s a step toward creating a more inclusive and accepting community of artists.",
         userId: 1,
         coverImg: "",
       },

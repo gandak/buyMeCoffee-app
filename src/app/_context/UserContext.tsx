@@ -117,7 +117,7 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
     };
 
     fetchUserById();
-  }, [params.userId]); // 👈 Now it updates whenever `params.userId` changes
+  }, [params.userId]);
 
   const loginUser = async (email: string, password: string) => {
     try {

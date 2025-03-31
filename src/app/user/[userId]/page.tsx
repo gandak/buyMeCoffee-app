@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import type { UserType } from "@/utils/types";
 import { useUser } from "@/app/_context/UserContext";
@@ -44,10 +44,17 @@ const formSchema = z.object({
   specialMessage: z.string().min(2, {
     message: "Special message must be at least 2 characters.",
   }),
+  receiverId: z.number({
+    message: "Special message must be at least 2 characters.",
+  }),
+  senderId: z.number({
+    message: "Special message must be at least 2 characters.",
+  }),
 });
 
 const userProfile = () => {
   const [open, setOpen] = useState(false);
+  const [receiverId, setReceiverId] = useState<number>(0);
   const [formValues, setFormValues] = useState<z.infer<
     typeof formSchema
   > | null>(null);
@@ -58,12 +65,14 @@ const userProfile = () => {
       donation: "",
       socialMediaURL: "",
       specialMessage: "",
+      receiverId: 0,
+      senderId: 0,
     },
   });
 
   const { user, loggedUser } = useUser() as {
     user: UserType | null;
-    loggedUser: string | null;
+    loggedUser: { _id: number } | null;
   };
 
   if (!user)
@@ -81,6 +90,8 @@ const userProfile = () => {
     : [];
 
   function onValidateForm(values: z.infer<typeof formSchema>) {
+    if (loggedUser) values.senderId = loggedUser._id;
+    values.receiverId = user?._id ?? 0;
     setFormValues(values);
     setOpen(true);
   }
@@ -270,10 +281,12 @@ const userProfile = () => {
                       ></Image>
                     </AlertDialogDescription>
                   </AlertDialogHeader>
-                  <AlertDialogFooter className="flex justify-center">
-                    <Button type="button" onClick={onFinalSubmit}>
-                      Click if paid
-                    </Button>
+                  <AlertDialogFooter className="flex justify-center w-full">
+                    <Link href={`/user/donationcompleted/${user._id}`}>
+                      <Button type="button" onClick={onFinalSubmit}>
+                        Click if paid
+                      </Button>
+                    </Link>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

@@ -33,7 +33,7 @@ export const Sidebar = () => {
             Explore
           </ToggleGroupItem>
         </Link>
-        <Link href={`/viewpage/user/${loggedUser?._id}`}>
+        <Link href={`/user/${loggedUser?._id}`}>
           <ToggleGroupItem
             value="view"
             className="w-[150px] h-[36px] flex justify-start"
