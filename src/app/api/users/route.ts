@@ -1,36 +1,24 @@
-import { checkUser } from "_backend/services/checkUser";
-import { getUsers } from "_backend/services/getUsers";
+import { runQuery } from "@/utils/queryService";
+import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
-  const url = new URL(req.url);
-  const userId = url.searchParams.get("userId");
+export async function GET(): Promise<NextResponse> {
+  try {
+    const incomingName = "boldo";
+    // const createTable = `CREATE TABLE "public"."Food" ("id" integer PRIMARY KEY,"name" varchar NOT NULL,"price" integer);`;
+    const getUser = `SELECT name,password FROM "User" WHERE name='${incomingName}' AND password='1235';`;
 
-  // If userId is provided, return a specific user
-  if (userId) {
-    console.log("userId:", userId);
-    const users = await getUsers();
-    const foundUser = users.find((user) => user._id === Number(userId));
-
-    if (!foundUser) {
-      return new Response(
-        JSON.stringify({ message: "Хэрэглэгч олдсонгүй", error: true }),
-        {
-          status: 404,
-        }
-      );
+    const user = await runQuery(getUser);
+    if (user.length <= 0) {
+      return new NextResponse(JSON.stringify({ error: "user not found" }), {
+        status: 404,
+      });
     }
-    return new Response(JSON.stringify({ data: foundUser }));
+
+    return new NextResponse(JSON.stringify({ foods: user }));
+  } catch (err) {
+    console.error("Failed to run query:", err);
+    return new NextResponse(JSON.stringify({ error: "Failed to run query" }), {
+      status: 500,
+    });
   }
-
-  // If no userId is provided, return all users
-  const users = await getUsers();
-  return new Response(JSON.stringify({ data: users }));
-}
-
-export async function POST(req: Request) {
-  const body = await req.json();
-  return await checkUser({
-    username: body.email,
-    password: body.password,
-  });
 }
