@@ -5,7 +5,7 @@ export async function GET(): Promise<NextResponse> {
   try {
     const incomingName = "boldo";
     // const createTable = `CREATE TABLE "public"."Food" ("id" integer PRIMARY KEY,"name" varchar NOT NULL,"price" integer);`;
-    const getUser = `SELECT name,password FROM "User" WHERE name='${incomingName}' AND password='1235';`;
+    const getUser = `SELECT name,password FROM "Users" WHERE name='${incomingName}' AND password='1235';`;
 
     const user = await runQuery(getUser);
     if (user.length <= 0) {
