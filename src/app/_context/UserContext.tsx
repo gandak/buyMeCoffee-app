@@ -1,9 +1,11 @@
 "use client";
-import { UserType } from "@/utils/types";
+import type { UserType } from "@/utils/types";
 import { useParams, useRouter } from "next/navigation";
-import React, {
+import {
   createContext,
-  ReactNode,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
   useContext,
   useEffect,
   useState,
@@ -15,6 +17,7 @@ type UserContextType = {
   loggedUser: UserType | null;
   logoutHandler: () => void;
   user: UserType | null;
+  setLoggedUser: Dispatch<SetStateAction<UserType | null>>;
 };
 
 const userContext = createContext<UserContextType>({} as UserContextType);
@@ -29,61 +32,67 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
   const params = useParams<{ userId: string }>();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("userId");
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("userId");
 
-    const fetchLoggedUser = async () => {
-      if (storedUser) {
+      const fetchLoggedUser = async () => {
+        if (storedUser) {
+          try {
+            const response = await fetch(`/api/users/${storedUser}`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error("Failed to fetch user data");
+            }
+
+            const data = await response.json();
+            console.log("Fetch user data by ID: ", data);
+
+            if (data.error) {
+              console.error(data.error);
+              localStorage.removeItem("userId");
+              router.replace("/signin");
+            } else {
+              setLoggedUser(data.foundUser);
+            }
+          } catch (error) {
+            console.error("Error fetching user:", error);
+            // Don't remove userId on network errors to prevent logout on temporary issues
+            if (error instanceof Error && error.message !== "Failed to fetch") {
+              localStorage.removeItem("userId");
+              router.replace("/signin");
+            }
+          } finally {
+            setLoading(false);
+          }
+        } else {
+          setLoading(false);
+        }
+      };
+
+      fetchLoggedUser();
+
+      const fetchAllUsers = async () => {
         try {
-          const response = await fetch(`/api/users?userId=${storedUser}`, {
+          const response = await fetch("/api/users", {
             method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
           });
 
-          if (!response.ok) {
-            throw new Error("Failed to fetch user data");
-          }
-
-          const data = await response.json();
-
-          console.log("Fetch use data by ID: ", data);
-
-          if (data.error) {
-            console.error(data.message);
-            localStorage.removeItem("userId");
-            router.replace("/signin");
-          } else {
-            setLoggedUser(data.data);
+          if (response.ok) {
+            const data = await response.json();
+            setUsers(data.data || []);
           }
         } catch (error) {
-          console.error("Error fetching user:", error);
-          localStorage.removeItem("userId");
-          router.replace("/signin");
+          console.error("Error fetching all users:", error);
         }
-      }
-    };
+      };
 
-    fetchLoggedUser();
-
-    const fetchAllUsers = async () => {
-      try {
-        const response = await fetch("/api/users", {
-          method: "GET",
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUsers(data.data || []);
-        }
-      } catch (error) {
-        console.error("Error fetching all users:", error);
-      }
-    };
-
-    fetchAllUsers();
-
-    setLoading(false);
+      fetchAllUsers();
+    }
   }, [router]);
 
   useEffect(() => {
@@ -91,7 +100,7 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
       if (!params?.userId) return;
 
       try {
-        const response = await fetch(`/api/users?userId=${params.userId}`, {
+        const response = await fetch(`/api/users/${params.userId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -105,10 +114,10 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
         const data = await response.json();
 
         if (data.error) {
-          console.error(data.message);
+          console.error(data.error);
           setUser(null);
         } else {
-          setUser(data.data);
+          setUser(data.foundUser || data.data);
         }
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -116,27 +125,34 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    fetchUserById();
-  }, [params.userId]);
+    if (params?.userId) {
+      fetchUserById();
+    }
+  }, [params]);
 
   const loginUser = async (email: string, password: string) => {
     try {
-      const response = await fetch("/api/users", {
+      const response = await fetch("/api/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
       });
 
       const data = await response.json();
 
-      if (data.foundUser.error) {
-        alert(data.foundUser.message);
+      console.log(data);
+      if (response.ok) {
+        localStorage.setItem("userId", data.user.id);
+        setLoggedUser(data.user);
+
+        router.push("/dashboard/user/" + data.user.id);
       } else {
-        localStorage.setItem("userId", data.foundUser._id);
-        setLoggedUser(data.foundUser);
-        router.push("/dashboard/user/" + data.foundUser._id);
+        console.error("Login failed:", data.message);
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -158,7 +174,14 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <userContext.Provider
-      value={{ loginUser, users, user, loggedUser, logoutHandler }}
+      value={{
+        loginUser,
+        users,
+        user,
+        loggedUser,
+        logoutHandler,
+        setLoggedUser,
+      }}
     >
       {children}
     </userContext.Provider>

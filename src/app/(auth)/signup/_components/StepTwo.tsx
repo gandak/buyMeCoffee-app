@@ -2,12 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import React, {
-  ChangeEventHandler,
-  Dispatch,
-  SetStateAction,
-  useState,
-} from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -49,7 +44,6 @@ export const StepTwo = ({ currentStep }: { currentStep: number }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      //   username: username,
       email: "",
       password: "",
     },
@@ -57,13 +51,28 @@ export const StepTwo = ({ currentStep }: { currentStep: number }) => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+
     try {
-      //   await addUser(values);
+      const response = await fetch("http://localhost:3000/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          email: values.email,
+          password: values.password,
+        }),
+      });
+
+      const jsonData = await response.json();
+      // router.push(`?step=${currentStep + 1}`);
+      router.push(`/createprofile`);
+      return jsonData;
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred while adding user. Try again");
+      alert("Бүртгэл үүсгэхэд алдаа гарлаа. Дахин оролдоно уу.");
     }
-    router.push(`?step=${currentStep + 1}`);
   }
 
   const goBack = () => {
