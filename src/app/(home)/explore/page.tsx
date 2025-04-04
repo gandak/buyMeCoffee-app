@@ -52,7 +52,7 @@ const explorePage = () => {
                       />
                       <h2 className="font-bold text-[20px]">{user.username}</h2>
                     </div>
-                    <Link href={`/user/${user._id}`}>
+                    <Link href={`/user/${user.id}`}>
                       <Button variant={"secondary"}>
                         <p>View profile</p>
                         <ExternalLink />

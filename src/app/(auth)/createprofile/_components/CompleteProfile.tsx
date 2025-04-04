@@ -25,6 +25,7 @@ import Image from "next/image";
 import { imageUpload } from "@/utils/imageUpload";
 import { useRouter } from "next/navigation";
 import Loading from "../loading";
+import { useProfile } from "@/app/_context/ProfileContext";
 
 const formSchema = z.object({
   avatarImage: z.string({
@@ -33,12 +34,15 @@ const formSchema = z.object({
   name: z.string().min(2).max(50),
   about: z.string(),
   socialMediaURL: z.string(),
+  backgroundImage: z.string().optional(),
 });
 
 export const CompleteProfile = ({ currentStep }: { currentStep: number }) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [file, SetFile] = useState<File | null>(null);
   const router = useRouter();
+
+  const { completeProfileData } = useProfile();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -47,6 +51,7 @@ export const CompleteProfile = ({ currentStep }: { currentStep: number }) => {
       name: "",
       about: "",
       socialMediaURL: "",
+      backgroundImage: "",
     },
   });
 
@@ -68,10 +73,14 @@ export const CompleteProfile = ({ currentStep }: { currentStep: number }) => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const imageURL = await imageUpload(file);
     values.avatarImage = imageURL;
-    console.log(values);
+
+    completeProfileData({
+      ...values,
+      backgroundImage: values.backgroundImage || "",
+    });
     Loading();
-    // VALUES SENT HIISNII DARAA SHALGAH
-    router.push(`/profile`);
+
+    router.push(`?step=${currentStep + 1}`);
   }
 
   return (

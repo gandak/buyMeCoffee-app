@@ -31,7 +31,9 @@ const formSchema = z.object({
   cardNumber: z.string(),
   expiryMonth: z.string(),
   expiryYear: z.string(),
-  cvc: z.number().int(),
+  cvc: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
+    message: "Expected number, received a string",
+  }),
 });
 
 export const PaidSection = ({ currentStep }: { currentStep: number }) => {
@@ -46,11 +48,9 @@ export const PaidSection = ({ currentStep }: { currentStep: number }) => {
       cardNumber: "",
       expiryMonth: "",
       expiryYear: "",
-      cvc: 0,
+      cvc: "",
     },
   });
-
-  const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {};
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -140,7 +140,7 @@ export const PaidSection = ({ currentStep }: { currentStep: number }) => {
               </FormItem>
             )}
           />
-          <div className="flex">
+          <div className="flex ">
             <FormField
               control={form.control}
               name="expiryMonth"

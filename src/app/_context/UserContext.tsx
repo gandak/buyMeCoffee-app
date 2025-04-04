@@ -61,7 +61,7 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
             }
           } catch (error) {
             console.error("Error fetching user:", error);
-            // Don't remove userId on network errors to prevent logout on temporary issues
+
             if (error instanceof Error && error.message !== "Failed to fetch") {
               localStorage.removeItem("userId");
               router.replace("/signin");
@@ -84,7 +84,7 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
 
           if (response.ok) {
             const data = await response.json();
-            setUsers(data.data || []);
+            setUsers(data || []);
           }
         } catch (error) {
           console.error("Error fetching all users:", error);
@@ -149,6 +149,13 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
       if (response.ok) {
         localStorage.setItem("userId", data.user.id);
         setLoggedUser(data.user);
+
+        console.log("profile shalgah user data:", data.user.Profiles);
+
+        if (!data.user.Profiles) {
+          router.push("/createprofile");
+          return;
+        }
 
         router.push("/dashboard/user/" + data.user.id);
       } else {

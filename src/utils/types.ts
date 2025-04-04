@@ -3,7 +3,7 @@ export type DonationType = {
     arg0: (acc: number, donation: DonationType) => number,
     arg1: number
   ): unknown;
-  _id: number;
+  id: number;
   name: string;
   amount: number;
   donorImage: string;
@@ -16,7 +16,7 @@ export type DonationType = {
 };
 
 export type Profile = {
-  _id: number;
+  id: number;
   name: string;
   about: string;
   avatarImage: string;
@@ -28,7 +28,7 @@ export type Profile = {
 };
 
 export type BankCard = {
-  _id: number;
+  id: number;
   country: string;
   firstName: string;
   lastName: string;
@@ -38,7 +38,7 @@ export type BankCard = {
 };
 
 export type UserType = {
-  _id: number;
+  id: number;
   email: string;
   password: string;
   username: string;

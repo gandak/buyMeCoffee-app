@@ -67,7 +67,7 @@ export const StepTwo = ({ currentStep }: { currentStep: number }) => {
 
       const jsonData = await response.json();
       // router.push(`?step=${currentStep + 1}`);
-      router.push(`/createprofile`);
+      router.push(`/signin`);
       return jsonData;
     } catch (error) {
       console.error("Error:", error);

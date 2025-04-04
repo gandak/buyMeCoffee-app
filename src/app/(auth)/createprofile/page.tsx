@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { CompleteProfile } from "./_components/CompleteProfile";
-import { PaidSection } from "./_components/PaidSection";
+import { PaidSection } from "./_components/BankCardSection";
 import { useSearchParams } from "next/navigation";
 
 const profilePage = () => {
