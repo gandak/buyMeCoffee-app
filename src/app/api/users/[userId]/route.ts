@@ -8,7 +8,7 @@ export async function GET(
   const userId = context.params.userId;
 
   try {
-    const getUser = `SELECT * FROM "Users" WHERE id=$1;`;
+    const getUser = `SELECT * FROM "Users" INNER JOIN "BankCards" ON "Users"."id" = "BankCards"."userId" WHERE "Users"."id"=$1;`;
     const foundUser = await runQuery<any>(getUser, [userId]);
 
     if (foundUser.length === 0) {
