@@ -31,7 +31,8 @@ const ProfileProvider = ({ children }: { children: ReactNode }) => {
     socialMediaURL: string;
     backgroundImage: string;
   }) => {
-    const response = await fetch(`/api/profile/${storedUserId}`, {
+    console.log("profile data ilgeehiin onoh values:", values);
+    const response = await fetch(`/api/profile`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -39,11 +40,14 @@ const ProfileProvider = ({ children }: { children: ReactNode }) => {
       body: JSON.stringify({
         name: values.name,
         about: values.about,
-        avatarimage: values.avatarImage,
-        socialmediaurl: values.socialMediaURL,
-        backgroundimage: values.backgroundImage,
+        avatarImage: values.avatarImage,
+        socialMediaURL: values.socialMediaURL,
+        backgroundImage: values.backgroundImage,
+        userId: storedUserId,
       }),
     });
+
+    console.log("profile data ilgeesen response:", response);
 
     if (!response.ok) {
       throw new Error("Failed to complete profile data");

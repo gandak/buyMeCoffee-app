@@ -19,8 +19,8 @@ export const DonorGenerator = ({
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="text-[14px]">{donor.name}</h3>
-            <p className="text-[12px]">{donor.socialURLOrByMeCoffee}</p>
+            <h3 className="text-[14px]">{donor.donorName}</h3>
+            <p className="text-[12px]">{donor.socialURLOrBuyMeACoffee}</p>
           </div>
         </div>
         <div className="flex flex-col items-end">

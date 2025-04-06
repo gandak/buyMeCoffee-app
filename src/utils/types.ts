@@ -4,11 +4,11 @@ export type DonationType = {
     arg1: number
   ): unknown;
   id: number;
-  name: string;
+  donorName: string;
   amount: number;
   donorImage: string;
   specialMessage: string;
-  socialURLOrByMeCoffee: string;
+  socialURLOrBuyMeACoffee: string;
   donorId: number;
   recipientId: number;
   createdAt: Date;
@@ -42,7 +42,7 @@ export type UserType = {
   email: string;
   password: string;
   username: string;
-  receivedDonations: DonationType[] | null;
+  donations: DonationType[] | null;
   profile: Profile;
   bankCard: BankCard[];
 };

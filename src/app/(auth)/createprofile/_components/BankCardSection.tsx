@@ -53,8 +53,8 @@ export const PaidSection = ({ currentStep }: { currentStep: number }) => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    router.push(`/profile`);
+    completeBankCardData(values);
+    router.push(`/`);
   }
 
   return (
@@ -229,3 +229,14 @@ export const PaidSection = ({ currentStep }: { currentStep: number }) => {
     </div>
   );
 };
+function completeBankCardData(values: {
+  country: string;
+  firstName: string;
+  lastName: string;
+  cardNumber: string;
+  expiryMonth: string;
+  expiryYear: string;
+  cvc: string;
+}) {
+  throw new Error("Function not implemented.");
+}

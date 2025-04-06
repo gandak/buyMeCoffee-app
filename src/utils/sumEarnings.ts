@@ -6,11 +6,11 @@ export const sumEarnings = (timeRange: string) => {
     user: UserType | null;
   };
 
-  if (!user || !Array.isArray(user.receivedDonations)) {
+  if (!user || !Array.isArray(user.donations)) {
     return 0;
   }
 
-  const timeFilteredUsers = user?.receivedDonations?.filter(
+  const timeFilteredUsers = user?.donations?.filter(
     (donation: DonationType) => {
       const donationDate = new Date(donation.createdAt);
       const currentDate = new Date();

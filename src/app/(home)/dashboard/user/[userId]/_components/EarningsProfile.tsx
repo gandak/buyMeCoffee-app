@@ -29,16 +29,16 @@ export const EarningsProfile = () => {
         <div className="flex justify-between items-center">
           <div className="flex gap-4 items-center">
             <Avatar className="w-12 h-12">
-              {/* <AvatarImage src={user?.profile.avatarImage} alt="@shadcn" /> */}
+              <AvatarImage src={user?.profile.avatarImage} alt="@shadcn" />
               <AvatarImage src="" alt="@shadcn" />
               <AvatarFallback>MN</AvatarFallback>
             </Avatar>
             <div>
               <h2 className="font-bold ">{user?.username}</h2>
-              {/* <p className="text-[14px]">{user?.profile.socialMediaURL}</p> */}
+              <p className="text-[14px]">{user?.profile.socialMediaURL}</p>
             </div>
           </div>
-          <CopyButton value={user?._id} />
+          <CopyButton value={user?.id} />
         </div>
         <div className="border-1 opacity-30"></div>
         <div>

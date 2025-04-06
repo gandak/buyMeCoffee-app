@@ -36,6 +36,7 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
       const storedUser = localStorage.getItem("userId");
 
       const fetchLoggedUser = async () => {
+        console.log("loggeduser:", loggedUser);
         if (storedUser) {
           try {
             const response = await fetch(`/api/users/${storedUser}`, {
@@ -50,14 +51,14 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
             }
 
             const data = await response.json();
-            console.log("Fetch user data by ID: ", data);
+            console.log("Fetch user data by ID: ", data.data);
 
             if (data.error) {
               console.error(data.error);
               localStorage.removeItem("userId");
               router.replace("/signin");
             } else {
-              setLoggedUser(data.foundUser);
+              setLoggedUser(data.data);
             }
           } catch (error) {
             console.error("Error fetching user:", error);
@@ -145,15 +146,17 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
 
       const data = await response.json();
 
-      console.log(data);
       if (response.ok) {
         localStorage.setItem("userId", data.user.id);
+
         setLoggedUser(data.user);
 
-        console.log("profile shalgah user data:", data.user.Profiles);
-
-        if (!data.user.Profiles) {
-          router.push("/createprofile");
+        if (!data.user.profile) {
+          if (!data.user.bankcards[0]) {
+            router.push("/createprofile?step=1");
+            return;
+          }
+          router.push("/createprofile?step=0");
           return;
         }
 

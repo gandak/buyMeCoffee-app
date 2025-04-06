@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "./_components/Header";
 import UsersProvider from "./_context/UserContext";
 import ProfileProvider from "./_context/ProfileContext";
+import BankCardProvider from "./_context/BankCardContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,12 +31,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
       >
-        <ProfileProvider>
-          <UsersProvider>
-            <Header />
-            {children}
-          </UsersProvider>
-        </ProfileProvider>
+        <BankCardProvider>
+          <ProfileProvider>
+            <UsersProvider>
+              <Header />
+              {children}
+            </UsersProvider>
+          </ProfileProvider>
+        </BankCardProvider>
       </body>
     </html>
   );

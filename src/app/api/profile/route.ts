@@ -10,40 +10,68 @@ export async function POST(req: Request): Promise<NextResponse> {
       socialMediaURL,
       backgroundImage,
       successMessage,
+      userId,
     } = await req.json();
 
-    // const checkUserQuery = `SELECT * FROM "Profile" WHERE id='${userId}';`;
+    if (successMessage) {
+      const updateUserSuccessMessageQuery = `
+      UPDATE "Profile" SET "successMessage" = $1
+      WHERE "userId" = $2
+      RETURNING *`;
 
-    // const user = await runQuery(checkUserQuery);
+      const userProfile = await runQuery(updateUserSuccessMessageQuery, [
+        successMessage,
+        userId,
+      ]);
 
-    // if (!user.length) {
-    //   return new NextResponse(
-    //     JSON.stringify({ error: "Хэрэглэгч олдсонгүй" }),
-    //     {
-    //       status: 404,
-    //       headers: { "Content-Type": "application/json" },
-    //     }
-    //   );
-    // }
+      return new NextResponse(
+        JSON.stringify({
+          message: "Хэрэглэгчийн нэмэлт мэдээллийг амжилттай шинэчиллээ!",
+          profile: userProfile,
+        }),
+        { status: 201, headers: { "Content-Type": "application/json" } }
+      );
+    }
 
-    const createUserProfileQuery = `
-        INSERT INTO "Profiles" (name, about, avatarimage, socialmediaurl, backgroundimage)
-        VALUES ($1, $2, $3, $4, $5);
-      `;
+    if (backgroundImage) {
+      const updateUserSuccessMessageQuery = `
+      UPDATE "Profile" SET "backgroundImage" = $1
+      WHERE "userId" = $2
+      RETURNING *`;
 
-    const userProfile = await runQuery(createUserProfileQuery, [
+      const userProfile = await runQuery(updateUserSuccessMessageQuery, [
+        backgroundImage,
+        userId,
+      ]);
+
+      return new NextResponse(
+        JSON.stringify({
+          message: "Хэрэглэгчийн нэмэлт мэдээллийг амжилттай шинэчиллээ!",
+          profile: userProfile,
+        }),
+        { status: 201, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    const updateUserProfileQuery = `
+      INSERT INTO "Profile" ("name", "about", "avatarImage", "socialMediaURL", "backgroundImage", "userId")
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *`;
+
+    const userProfile = await runQuery(updateUserProfileQuery, [
       name,
       about,
       avatarImage,
       socialMediaURL,
       backgroundImage,
+      userId,
     ]);
 
     console.log(userProfile);
 
     return new NextResponse(
       JSON.stringify({
-        message: "Амжилттай хэрэглэгч нэмэгдлээ!",
+        message: "Хэрэглэгчийн нэмэлт мэдээллийг амжилттай нэмлээ!",
         profile: userProfile,
       }),
       { status: 201, headers: { "Content-Type": "application/json" } }
