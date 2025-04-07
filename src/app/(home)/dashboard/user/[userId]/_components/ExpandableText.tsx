@@ -11,7 +11,7 @@ export default function ExpandableText({ text }: { text: string }) {
 
   return (
     <div>
-      <p>
+      <p className="text-[14px]">
         {displayText}
 
         {shouldShowButton && (

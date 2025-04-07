@@ -1,8 +1,10 @@
 "use client";
 import { useUser } from "@/app/_context/UserContext";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { UserType } from "@/utils/types";
+import { AvatarImage } from "@radix-ui/react-avatar";
 import { ExternalLink, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -43,13 +45,14 @@ const explorePage = () => {
                 >
                   <div className="w-full flex justify-between items-center">
                     <div className="w-full flex items-center  gap-4">
-                      <Image
-                        alt=""
-                        src={user.profile.avatarImage}
-                        width={40}
-                        height={40}
-                        className="rounded-full"
-                      />
+                      <Avatar>
+                        <AvatarImage
+                          alt="creators"
+                          src={user.profile.avatarImage}
+                          className="object-cover object-center"
+                        />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
                       <h2 className="font-bold text-[20px]">{user.username}</h2>
                     </div>
                     <Link href={`/user/${user.id}`}>

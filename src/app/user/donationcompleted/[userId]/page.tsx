@@ -6,6 +6,7 @@ import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const donationCompleted = () => {
   const { user } = useUser();
@@ -20,16 +21,17 @@ const donationCompleted = () => {
       </div>
       <div className="border-1 w-[510px] flex flex-col gap-2 p-4 rounded-md">
         <div className="flex gap-4 items-center">
-          <Image
-            alt=""
-            src={user?.profile.avatarImage || "/guest.png"}
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
+          <Avatar>
+            <AvatarImage
+              alt=""
+              src={user?.profile.avatarImage || "/guest.png"}
+              className="rounded-full object-cover"
+            />
+            <AvatarFallback>MN</AvatarFallback>
+          </Avatar>
           <h2 className="font-bold text-[14px]">{user?.username}:</h2>
         </div>
-        <div>
+        <div className="flex justify-center">
           <p>{user?.profile.successMessage}</p>
         </div>
       </div>

@@ -1,6 +1,12 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import { createContext, type ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 type profileContextType = {
   completeProfileData: (values: {
@@ -21,8 +27,11 @@ const ProfileProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const params = useParams<{ userId: string }>();
+  const [storedUserId, setStoredUserId] = useState<string | null>(null);
 
-  const storedUserId = localStorage.getItem("userId");
+  useEffect(() => {
+    setStoredUserId(localStorage.getItem("userId"));
+  }, []);
 
   const completeProfileData = async (values: {
     name: string;

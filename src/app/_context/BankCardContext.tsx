@@ -1,6 +1,12 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import { createContext, type ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 type BankCardContextType = {
   completeBankCardData: (values: {
@@ -22,8 +28,11 @@ export const useBankCard = () => useContext(bankCardContext);
 const BankCardProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const [storedUserId, setStoredUserId] = useState<string | null>(null);
 
-  const storedUserId = localStorage.getItem("userId");
+  useEffect(() => {
+    setStoredUserId(localStorage.getItem("userId"));
+  }, []);
 
   const completeBankCardData = async (values: {
     country: string;

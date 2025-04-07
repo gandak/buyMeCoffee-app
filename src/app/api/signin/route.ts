@@ -33,6 +33,7 @@ export async function POST(req: Request): Promise<NextResponse> {
                               "Users"."id",
                               "Users"."email",
                               "Users"."username",
+                              "Users"."password",
                             
                               json_build_object(
                                 'name', "Profile"."name",
@@ -82,6 +83,7 @@ export async function POST(req: Request): Promise<NextResponse> {
                               "Users"."id",
                               "Users"."email",
                               "Users"."username",
+                              "Users"."password",
                               "Profile"."name",
                               "Profile"."about",
                               "Profile"."avatarImage",
@@ -97,10 +99,7 @@ export async function POST(req: Request): Promise<NextResponse> {
 
     const foundUser = await runQuery<User>(foundUserQuery, [email]);
 
-    const isPasswordValid = bcrypt.compareSync(
-      password,
-      foundUser[0]?.password
-    );
+    const isPasswordValid = bcrypt.compareSync(password, foundUser[0].password);
 
     if (!isPasswordValid) {
       return new NextResponse(

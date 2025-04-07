@@ -2,6 +2,7 @@ import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DonationType } from "@/utils/types";
 import ExpandableText from "./ExpandableText";
+import { DateAgo } from "@/utils/DateAgo";
 
 export const DonorGenerator = ({
   donor,
@@ -11,15 +12,30 @@ export const DonorGenerator = ({
   index: number;
 }) => {
   return (
-    <div key={index} className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3">
       <div className="flex justify-between">
         <div className="flex items-center gap-2">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
+            {donor.donorImage ? (
+              <AvatarImage
+                src={donor.donorImage}
+                alt={donor.donorName}
+                className="object-cover"
+              />
+            ) : (
+              <AvatarImage
+                src="https://github.com/shadcn.png"
+                alt=""
+                className="object-cover"
+              />
+            )}
+
+            <AvatarFallback>MN</AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="text-[14px]">{donor.donorName}</h3>
+            <h3 className="text-[14px] font-semibold">
+              {donor.donorName ? donor.donorName : "Guest"}
+            </h3>
             <p className="text-[12px]">{donor.socialURLOrBuyMeACoffee}</p>
           </div>
         </div>
@@ -28,7 +44,8 @@ export const DonorGenerator = ({
             <p>+</p>
             <h2 className="font-bold">{donor.amount}</h2>
           </div>
-          <p className="text-[#71717A] text-[12px]">{} hours ago</p>
+
+          <DateAgo date={donor.createdAt} />
         </div>
       </div>
 

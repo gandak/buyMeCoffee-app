@@ -35,19 +35,19 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { EditProfilebutton } from "./_components/EditProfilebutton";
 
 const formSchema = z.object({
-  donation: z.string({
+  amount: z.string({
     message: "You must choose a number to donate",
   }),
   socialMediaURL: z.string().url({
     message: "You must insert your social media URL",
   }),
-  specialMessage: z.string().min(2, {
+  specialmessage: z.string().min(2, {
     message: "Special message must be at least 2 characters.",
   }),
-  receiverId: z.number({
+  recipientid: z.number({
     message: "Special message must be at least 2 characters.",
   }),
-  senderId: z.number({
+  donorid: z.number({
     message: "Special message must be at least 2 characters.",
   }),
 });
@@ -62,17 +62,17 @@ const userProfile = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      donation: "",
+      amount: "",
       socialMediaURL: "",
-      specialMessage: "",
-      receiverId: 0,
-      senderId: 0,
+      specialmessage: "",
+      recipientid: 0,
+      donorid: 0,
     },
   });
 
   const { user, loggedUser } = useUser() as {
     user: UserType | null;
-    loggedUser: { _id: number } | null;
+    loggedUser: { id: number } | null;
   };
 
   if (!user)
@@ -85,24 +85,49 @@ const userProfile = () => {
       </div>
     );
 
-  const latestDonors = user.receivedDonations
-    ? [...user.receivedDonations].reverse()
-    : [];
+  const latestDonors = user.donations ? [...user.donations].reverse() : [];
 
   function onValidateForm(values: z.infer<typeof formSchema>) {
-    if (loggedUser) values.senderId = loggedUser._id;
-    values.receiverId = user?._id ?? 0;
+    if (loggedUser) values.donorid = loggedUser.id;
+    values.recipientid = user?.id ?? 0;
     setFormValues(values);
     setOpen(true);
   }
 
-  function onFinalSubmit() {
+  async function onFinalSubmit() {
     if (formValues) {
       console.log("Values:", formValues);
 
-      setOpen(false);
-      form.reset();
+      const response = await fetch(`/api/donation`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: formValues.amount,
+          donorid: formValues.donorid,
+          recipientid: formValues.recipientid,
+          socialMediaURL: formValues.socialMediaURL,
+          specialmessage: formValues.specialmessage,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to complete profile data");
+      }
+
+      const data = await response.json();
+      console.log("User profile data:", data);
+
+      if (data.error) {
+        console.error(data.error);
+      } else {
+        setLoading(false);
+      }
     }
+
+    setOpen(false);
+    form.reset();
   }
 
   return (
@@ -156,7 +181,7 @@ const userProfile = () => {
           <div className="w-full flex flex-col gap-4 bg-white rounded-lg border-1">
             <div className="flex flex-col gap-4 p-6 ">
               <h3 className="font-bold">Recent supporters</h3>
-              {user.receivedDonations ? (
+              {user.donations ? (
                 <div className="flex gap-4">
                   <RecentSupporters latestDonors={latestDonors} />
                 </div>
@@ -181,7 +206,7 @@ const userProfile = () => {
             >
               <FormField
                 control={form.control}
-                name="donation"
+                name="amount"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Select amount:</FormLabel>
@@ -245,7 +270,7 @@ const userProfile = () => {
               />
               <FormField
                 control={form.control}
-                name="specialMessage"
+                name="specialmessage"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Special message</FormLabel>
@@ -282,7 +307,7 @@ const userProfile = () => {
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter className="flex justify-center w-full">
-                    <Link href={`/user/donationcompleted/${user._id}`}>
+                    <Link href={`/user/donationcompleted/${user.id}`}>
                       <Button type="button" onClick={onFinalSubmit}>
                         Click if paid
                       </Button>
@@ -299,3 +324,6 @@ const userProfile = () => {
 };
 
 export default userProfile;
+function setLoading(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}

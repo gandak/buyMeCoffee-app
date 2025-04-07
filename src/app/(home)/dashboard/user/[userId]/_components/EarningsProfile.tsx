@@ -29,8 +29,12 @@ export const EarningsProfile = () => {
         <div className="flex justify-between items-center">
           <div className="flex gap-4 items-center">
             <Avatar className="w-12 h-12">
-              <AvatarImage src={user?.profile.avatarImage} alt="@shadcn" />
-              <AvatarImage src="" alt="@shadcn" />
+              <AvatarImage
+                src={user?.profile.avatarImage}
+                alt="@shadcn"
+                className="object-cover"
+              />
+
               <AvatarFallback>MN</AvatarFallback>
             </Avatar>
             <div>

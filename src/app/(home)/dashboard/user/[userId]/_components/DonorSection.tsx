@@ -13,7 +13,7 @@ export const DonorSection = ({
   const { loggedUser } = useUser();
 
   return (
-    <div>
+    <div className="flex flex-col gap-6">
       {loggedUser?.donations == null ? (
         <div className="flex flex-col items-center">
           <h2 className="font-bold">You don't have any supporters yet</h2>
@@ -31,7 +31,9 @@ export const DonorSection = ({
       )}
       {selectedAmounts.length == 0 &&
         loggedUser?.donations?.map((donor: DonationType, index: number) => (
-          <DonorGenerator donor={donor} index={index} />
+          <div key={index}>
+            <DonorGenerator donor={donor} />
+          </div>
         ))}
     </div>
   );

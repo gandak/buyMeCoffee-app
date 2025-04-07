@@ -10,7 +10,7 @@ export type DonationType = {
   specialMessage: string;
   socialURLOrBuyMeACoffee: string;
   donorId: number;
-  recipientId: number;
+  recipientid: number;
   createdAt: Date;
   updatedAt: Date;
 };

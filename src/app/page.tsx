@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "./_context/UserContext";
 import { EarningsProfile } from "./(home)/dashboard/user/[userId]/_components/EarningsProfile";
@@ -10,7 +10,13 @@ const Home = () => {
 
   const router = useRouter();
 
-  if (!loggedUser) router.push("/signin");
+  useEffect(() => {
+    if (!loggedUser) {
+      router.push("/signin");
+    } else {
+      router.push(`/dashboard/user/${loggedUser.id}`);
+    }
+  }, [loggedUser, router]);
 
   return (
     <div className="flex flex-col gap-6 pr-20">
