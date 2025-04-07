@@ -54,7 +54,7 @@ export async function POST(req: Request): Promise<NextResponse> {
     }
 
     const updateUserProfileQuery = `
-      INSERT INTO "Profile" ("name", "about", "avatarImage", "socialMediaURL", "backgroundImage", "userId")
+      INSERT INTO "Profile" ("name", "about", "avatarImage", "socialMediaURL", "userId")
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *`;
 
@@ -87,21 +87,21 @@ export async function POST(req: Request): Promise<NextResponse> {
 
 export async function PATCH(req: Request): Promise<NextResponse> {
   try {
-    const { name, about, socialMediaURL, userId } = await req.json();
+    const { name, about, socialMediaURL, avatarImage, userId } =
+      await req.json();
 
     const updateUserProfileQuery = `
-      UPDATE "Profile" SET "name" = $1, "about" = $2, "socialMediaURL" = $3
-      WHERE "userId" = $4
+      UPDATE "Profile" SET "name" = $1, "about" = $2, "socialMediaURL" = $3, "avatarImage" = $4
+      WHERE "userId" = $5
       RETURNING *`;
 
     const updatedUserProfile = await runQuery(updateUserProfileQuery, [
       name,
       about,
       socialMediaURL,
+      avatarImage,
       userId,
     ]);
-
-    console.log(updatedUserProfile);
 
     return new NextResponse(
       JSON.stringify({

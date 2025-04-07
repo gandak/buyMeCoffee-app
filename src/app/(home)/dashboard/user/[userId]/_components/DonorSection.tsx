@@ -26,7 +26,7 @@ export const DonorSection = ({
             selectedAmounts.includes(JSON.stringify(donor.amount))
           )
           .map((donor: DonationType, index: number) => (
-            <DonorGenerator donor={donor} index={index} />
+            <DonorGenerator donor={donor} />
           ))
       )}
       {selectedAmounts.length == 0 &&

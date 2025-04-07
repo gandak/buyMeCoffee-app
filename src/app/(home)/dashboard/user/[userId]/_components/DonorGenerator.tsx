@@ -4,13 +4,7 @@ import { DonationType } from "@/utils/types";
 import ExpandableText from "./ExpandableText";
 import { DateAgo } from "@/utils/DateAgo";
 
-export const DonorGenerator = ({
-  donor,
-  index,
-}: {
-  donor: DonationType;
-  index: number;
-}) => {
+export const DonorGenerator = ({ donor }: { donor: DonationType }) => {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex justify-between">
@@ -42,7 +36,7 @@ export const DonorGenerator = ({
         <div className="flex flex-col items-end">
           <div className="flex gap-1">
             <p>+</p>
-            <h2 className="font-bold">{donor.amount}</h2>
+            <h2 className="font-bold">${donor.amount}</h2>
           </div>
 
           <DateAgo date={donor.createdAt} />

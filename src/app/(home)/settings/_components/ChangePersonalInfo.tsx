@@ -40,7 +40,6 @@ export const ChangePersonalInfo = () => {
 
   if (!loggedUser) return;
 
-  console.log(loggedUser);
   useEffect(() => {
     if (loggedUser.profile.avatarImage) {
       setImagePreview(loggedUser.profile.avatarImage);
@@ -59,13 +58,14 @@ export const ChangePersonalInfo = () => {
   });
 
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) {
+    if (!imagePreview && !e.target.files) {
       return alert("Та зургаа сонгоно уу 1");
     }
-    const imageURL = URL.createObjectURL(e.target.files[0]);
-
-    setImagePreview(imageURL);
-    SetFile(e.target.files[0]);
+    if (e.target.files && e.target.files[0]) {
+      const imageURL = URL.createObjectURL(e.target.files[0]);
+      setImagePreview(imageURL);
+      SetFile(e.target.files[0]);
+    }
   };
 
   const deletePreview = () => {
@@ -76,7 +76,6 @@ export const ChangePersonalInfo = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const imageURL = await imageUpload(file);
     values.avatarImage = imageURL;
-
     completeProfileData({
       ...values,
     });
@@ -84,7 +83,7 @@ export const ChangePersonalInfo = () => {
 
   return (
     <div className="max-w-[650px] text-[24px] flex flex-col gap-4 border-1 rounded-md p-4">
-      <h1 className="font-semibold">Complete your profile page</h1>{" "}
+      <h1 className="font-semibold">Personal Info</h1>{" "}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField

@@ -37,8 +37,7 @@ const ProfileProvider = ({ children }: { children: ReactNode }) => {
     socialMediaURL: string;
     userId: string;
   }) => {
-    console.log("profile data ilgeehiin onoh values:", values);
-    const response = await axios.patch(`/api/profile`, { values });
+    const response = await axios.patch(`/api/profile`, values);
 
     console.log("User profile data:", response);
   };
