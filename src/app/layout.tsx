@@ -5,6 +5,7 @@ import { Header } from "./_components/Header";
 import UsersProvider from "./_context/UserContext";
 import ProfileProvider from "./_context/ProfileContext";
 import BankCardProvider from "./_context/BankCardContext";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default function RootLayout({
             <UsersProvider>
               <Header />
               {children}
+              <Toaster />
             </UsersProvider>
           </ProfileProvider>
         </BankCardProvider>

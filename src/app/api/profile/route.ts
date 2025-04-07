@@ -84,3 +84,37 @@ export async function POST(req: Request): Promise<NextResponse> {
     );
   }
 }
+
+export async function PATCH(req: Request): Promise<NextResponse> {
+  try {
+    const { name, about, socialMediaURL, userId } = await req.json();
+
+    const updateUserProfileQuery = `
+      UPDATE "Profile" SET "name" = $1, "about" = $2, "socialMediaURL" = $3
+      WHERE "userId" = $4
+      RETURNING *`;
+
+    const updatedUserProfile = await runQuery(updateUserProfileQuery, [
+      name,
+      about,
+      socialMediaURL,
+      userId,
+    ]);
+
+    console.log(updatedUserProfile);
+
+    return new NextResponse(
+      JSON.stringify({
+        message: "Хэрэглэгчийн нэмэлт мэдээллийг амжилттай нэмлээ!",
+        profile: updatedUserProfile,
+      }),
+      { status: 201, headers: { "Content-Type": "application/json" } }
+    );
+  } catch (err) {
+    console.error("Алдаа гарлаа:", err);
+    return new NextResponse(
+      JSON.stringify({ error: "Серверийн алдаа гарлаа!" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+}

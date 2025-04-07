@@ -1,11 +1,5 @@
 "use client";
-import React, {
-  Dispatch,
-  ReactEventHandler,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -13,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -25,8 +18,8 @@ import { Camera, X } from "lucide-react";
 import Image from "next/image";
 import { imageUpload } from "@/utils/imageUpload";
 import { useRouter } from "next/navigation";
-import Loading from "../loading";
 import { useProfile } from "@/app/_context/ProfileContext";
+import { useUser } from "@/app/_context/UserContext";
 
 const formSchema = z.object({
   avatarImage: z.string({
@@ -35,30 +28,33 @@ const formSchema = z.object({
   name: z.string().min(2).max(50),
   about: z.string(),
   socialMediaURL: z.string(),
-  backgroundImage: z.string().optional(),
   userId: z.string(),
 });
 
-export const CompleteProfile = ({ currentStep }: { currentStep: number }) => {
+export const ChangePersonalInfo = () => {
+  const { loggedUser } = useUser();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [file, SetFile] = useState<File | null>(null);
-  const router = useRouter();
-  const [storedUserId, setStoredUserId] = useState<string | null>(null);
 
   const { completeProfileData } = useProfile();
 
+  if (!loggedUser) return;
+
+  console.log(loggedUser);
   useEffect(() => {
-    setStoredUserId(localStorage.getItem("userId"));
+    if (loggedUser.profile.avatarImage) {
+      setImagePreview(loggedUser.profile.avatarImage);
+    }
   }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       avatarImage: "",
-      name: "",
-      about: "",
-      socialMediaURL: "",
-      userId: storedUserId || "",
+      name: loggedUser.profile.name,
+      about: loggedUser.profile.about,
+      socialMediaURL: loggedUser.profile.socialMediaURL,
+      userId: JSON.stringify(loggedUser.id),
     },
   });
 
@@ -84,13 +80,10 @@ export const CompleteProfile = ({ currentStep }: { currentStep: number }) => {
     completeProfileData({
       ...values,
     });
-    Loading();
-
-    router.push(`?step=${currentStep + 1}`);
   }
 
   return (
-    <div className="w-[500px] text-[24px] flex flex-col gap-4">
+    <div className="max-w-[650px] text-[24px] flex flex-col gap-4 border-1 rounded-md p-4">
       <h1 className="font-semibold">Complete your profile page</h1>{" "}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -109,6 +102,7 @@ export const CompleteProfile = ({ currentStep }: { currentStep: number }) => {
                           src={imagePreview}
                           width={160}
                           height={160}
+                          className=" object-cover"
                         ></Image>
                         <Button
                           className="absolute bg-white rounded-full w-[30px] h-[30px]"
@@ -176,7 +170,9 @@ export const CompleteProfile = ({ currentStep }: { currentStep: number }) => {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit" className="w-full">
+            Save changes
+          </Button>
         </form>
       </Form>
     </div>

@@ -6,7 +6,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -17,7 +16,6 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -25,6 +23,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import axios from "axios";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -52,20 +52,42 @@ export const EditProfilebutton = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("Values:", values);
+    if (!loggedUser) return;
+    const response = await axios.patch(`/api/profile/`, {
+      name: values.name,
+      about: values.about,
+      socialMediaURL: values.socialMediaURL,
+      userId: loggedUser.id,
+    });
+    if (response.status !== 201) {
+      toast.error(response.data.message);
+      return;
+    }
+
+    console.log("User profile data:", response.data.message);
+    toast(response.data.message);
+
+    // if (data.error) {
+    //   console.error(data.error);
+    // } else {
+    //   setLoading(false);
+    // }
+
+    setOpen(false);
+    form.reset();
     setOpen(false);
   }
 
   const closeEditProfile = () => {
     setOpen(false);
   };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default">Edit Profile</Button>
+        <Button variant="default">Edit page</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -132,3 +154,6 @@ export const EditProfilebutton = () => {
     </Dialog>
   );
 };
+function setLoading(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}

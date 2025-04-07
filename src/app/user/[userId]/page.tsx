@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/form";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { EditProfilebutton } from "./_components/EditProfilebutton";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 const formSchema = z.object({
   amount: z.string({
@@ -151,13 +152,13 @@ const userProfile = () => {
             <div className="flex flex-col gap-4 p-6 ">
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <Image
-                    alt=""
-                    src={user?.profile.avatarImage || "/placeholder.svg"}
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                  />
+                  <Avatar>
+                    <AvatarImage
+                      alt=""
+                      src={user?.profile.avatarImage || "/placeholder.svg"}
+                      className="object-cover"
+                    />
+                  </Avatar>
                   <h2 className="font-bold">{user?.profile.name}</h2>
                 </div>
                 <EditProfilebutton />

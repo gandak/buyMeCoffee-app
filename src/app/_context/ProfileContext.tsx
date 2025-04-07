@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import {
   createContext,
@@ -14,7 +15,7 @@ type profileContextType = {
     about: string;
     avatarImage: string;
     socialMediaURL: string;
-    backgroundImage: string;
+    userId: string;
   }) => Promise<void>;
 };
 
@@ -29,48 +30,17 @@ const ProfileProvider = ({ children }: { children: ReactNode }) => {
   const params = useParams<{ userId: string }>();
   const [storedUserId, setStoredUserId] = useState<string | null>(null);
 
-  useEffect(() => {
-    setStoredUserId(localStorage.getItem("userId"));
-  }, []);
-
   const completeProfileData = async (values: {
     name: string;
     about: string;
     avatarImage: string;
     socialMediaURL: string;
-    backgroundImage: string;
+    userId: string;
   }) => {
     console.log("profile data ilgeehiin onoh values:", values);
-    const response = await fetch(`/api/profile`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: values.name,
-        about: values.about,
-        avatarImage: values.avatarImage,
-        socialMediaURL: values.socialMediaURL,
-        backgroundImage: values.backgroundImage,
-        userId: storedUserId,
-      }),
-    });
+    const response = await axios.patch(`/api/profile`, { values });
 
-    console.log("profile data ilgeesen response:", response);
-
-    if (!response.ok) {
-      throw new Error("Failed to complete profile data");
-    }
-
-    const data = await response.json();
-    console.log("User profile data:", data);
-
-    if (data.error) {
-      console.error(data.error);
-      router.replace("/completeprofile");
-    } else {
-      setLoading(false);
-    }
+    console.log("User profile data:", response);
   };
 
   return (
