@@ -13,10 +13,10 @@ const Home = () => {
   useEffect(() => {
     if (!loggedUser) {
       router.push("/signin");
-    } else {
-      router.push(`/dashboard/user/${loggedUser.id}`);
     }
   }, [loggedUser, router]);
+
+  if (!loggedUser) return null;
 
   return (
     <div className="flex flex-col gap-6 pr-20">

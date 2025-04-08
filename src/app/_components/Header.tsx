@@ -26,7 +26,7 @@ export const Header = () => {
   const isUser = pathname === "/signin";
 
   return (
-    <div className="absolute flex px-20 w-full bg-white h-[56px]">
+    <div className="absolute flex px-20 w-full bg-white h-[56px] z-10 ">
       <div className="flex justify-between w-full items-center">
         <Link href="/">
           <Image
@@ -41,10 +41,7 @@ export const Header = () => {
           <div className="flex gap-2 py-2 px-4 items-center w-[187px] h-[40px] justify-between">
             <div className="flex items-center gap-4">
               <Avatar className="w-10 h-10">
-                <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="@shadcn"
-                />
+                <AvatarImage src={loggedUser.profile.avatarImage} alt="user" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <p>{loggedUser.username}</p>

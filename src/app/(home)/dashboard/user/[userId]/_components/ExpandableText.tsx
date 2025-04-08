@@ -2,18 +2,20 @@
 
 import { useState } from "react";
 
-export default function ExpandableText({ text }: { text: string }) {
+export default function ExpandableText({ text }: { text?: string | null }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const shouldShowButton = text.length > 200;
+  const newText = text ?? "";
+
+  const shouldShowButton = newText.length > 200;
+
   const displayText =
-    isExpanded || !shouldShowButton ? text : `${text.slice(0, 200)}... `;
+    isExpanded || !shouldShowButton ? newText : `${newText.slice(0, 200)}... `;
 
   return (
     <div>
       <p className="text-[14px]">
         {displayText}
-
         {shouldShowButton && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}

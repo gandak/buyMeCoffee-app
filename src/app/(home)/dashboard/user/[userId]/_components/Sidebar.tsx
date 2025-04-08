@@ -7,10 +7,11 @@ import { useUser } from "@/app/_context/UserContext";
 import { UserType } from "@/utils/types";
 
 export const Sidebar = () => {
-  const { loggedUser, logoutHandler } = useUser() as {
+  const { loggedUser } = useUser() as {
     loggedUser: UserType | null;
     logoutHandler: () => void;
   };
+
   return (
     <div className=" h-[100vh] w-[20%] text-white flex flex-col pl-20 ">
       <ToggleGroup

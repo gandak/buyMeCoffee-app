@@ -42,8 +42,6 @@ export const ChangePersonalInfo = () => {
 
   if (!loggedUser) return;
 
-  console.log(loggedUser.profile.avatarImage);
-
   useEffect(() => {
     setImagePreview(loggedUser.profile.avatarImage);
   }, []);
@@ -104,6 +102,7 @@ export const ChangePersonalInfo = () => {
                           width={160}
                           height={160}
                           className=" object-cover"
+                          priority
                         ></Image>
                         <Button
                           className="absolute bg-white rounded-full w-[30px] h-[30px]"

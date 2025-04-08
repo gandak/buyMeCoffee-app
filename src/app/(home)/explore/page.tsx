@@ -8,15 +8,30 @@ import { AvatarImage } from "@radix-ui/react-avatar";
 import { ExternalLink, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const explorePage = () => {
+  const [filteredUsers, setFilteredUsers] = useState<UserType[]>([]);
   const { users } = useUser() as {
     users: UserType[] | null;
   };
 
+  if (!users) return;
+
+  useEffect(() => {
+    if (users) setFilteredUsers(users);
+  }, [users]);
+
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
+    const searchValue = e.target.value.toLowerCase();
+
+    if (!users) return;
+
+    const filtered = users.filter((user) =>
+      user.username.toLowerCase().includes(searchValue)
+    );
+
+    setFilteredUsers(filtered);
   };
 
   return (
@@ -37,7 +52,7 @@ const explorePage = () => {
       <div className="flex flex-col gap-6 ">
         <div className="flex justify-between">
           <div className="w-full flex flex-col gap-4">
-            {users?.map((user, index) => {
+            {filteredUsers?.map((user, index) => {
               return (
                 <div
                   key={index}
@@ -48,7 +63,7 @@ const explorePage = () => {
                       <Avatar>
                         <AvatarImage
                           alt="creators"
-                          src={user.profile.avatarImage}
+                          src={user.profile.avatarImage || "/guestDefault.svg"}
                           className="object-cover object-center"
                         />
                         <AvatarFallback>CN</AvatarFallback>

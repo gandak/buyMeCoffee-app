@@ -26,6 +26,8 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/app/_context/UserContext";
 import { useBankCard } from "@/app/_context/BankCardContext";
 import { log } from "console";
+import axios from "axios";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   country: z.string(),
@@ -37,6 +39,7 @@ const formSchema = z.object({
   cvc: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
     message: "Expected number, received a string",
   }),
+  userId: z.string(),
 });
 
 export const ChangePaymentInfo = () => {
@@ -57,22 +60,25 @@ export const ChangePaymentInfo = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      country: loggedUser.bankcard.country?.toLowerCase() ?? "",
+      country: loggedUser.bankcard.country ?? "",
       firstName: loggedUser.bankcard.firstName ?? "",
       lastName: loggedUser.bankcard.lastName ?? "",
       cardNumber: loggedUser.bankcard.cardNumber ?? "",
       expiryMonth: monthName?.toLowerCase() ?? "",
       expiryYear: bankCardDateArray[0] ?? "",
       cvc: loggedUser.bankcard.cvc ?? "",
+      userId: JSON.stringify(loggedUser.id) ?? "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    completeBankCardData({
-      ...values,
-      month: values.expiryMonth,
-      year: values.expiryYear,
-    });
+    const response = await axios.put(`/api/bankcard`, values);
+    if (response.status !== 201) {
+      toast.error(response.data.message);
+      return;
+    }
+
+    toast(response.data.message);
   }
 
   return (
@@ -100,11 +106,15 @@ export const ChangePaymentInfo = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup {...field}>
-                        <SelectItem value="mongolia">Mongolia</SelectItem>
-                        <SelectItem value="australia">Australia</SelectItem>
-                        <SelectItem value="us">United States</SelectItem>
-                        <SelectItem value="newzealand">New Zealand</SelectItem>
-                        <SelectItem value="uk">United Kingdom</SelectItem>
+                        <SelectItem value="Mongolia">Mongolia</SelectItem>
+                        <SelectItem value="Australia">Australia</SelectItem>
+                        <SelectItem value="United States">
+                          United States
+                        </SelectItem>
+                        <SelectItem value="New Zealand">New Zealand</SelectItem>
+                        <SelectItem value="United Kingdom">
+                          United Kingdom
+                        </SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>

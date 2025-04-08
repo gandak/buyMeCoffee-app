@@ -85,7 +85,7 @@ export async function POST(req: Request): Promise<NextResponse> {
   }
 }
 
-export async function PATCH(req: Request): Promise<NextResponse> {
+export async function PUT(req: Request): Promise<NextResponse> {
   try {
     const { name, about, socialMediaURL, avatarImage, userId } =
       await req.json();
@@ -106,6 +106,36 @@ export async function PATCH(req: Request): Promise<NextResponse> {
     return new NextResponse(
       JSON.stringify({
         message: "Хэрэглэгчийн нэмэлт мэдээллийг амжилттай нэмлээ!",
+        profile: updatedUserProfile,
+      }),
+      { status: 201, headers: { "Content-Type": "application/json" } }
+    );
+  } catch (err) {
+    console.error("Алдаа гарлаа:", err);
+    return new NextResponse(
+      JSON.stringify({ error: "Серверийн алдаа гарлаа!" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+}
+
+export async function PATCH(req: Request): Promise<NextResponse> {
+  try {
+    const { backgroundImage, userId } = await req.json();
+
+    const updateUserProfileQuery = `
+      UPDATE "Profile" SET "backgroundImage" = $1
+      WHERE "userId" = $2
+      RETURNING *`;
+
+    const updatedUserProfile = await runQuery(updateUserProfileQuery, [
+      backgroundImage,
+      userId,
+    ]);
+
+    return new NextResponse(
+      JSON.stringify({
+        message: "Хэрэглэгчийн ханын зургийг амжилттай нэмлээ!",
         profile: updatedUserProfile,
       }),
       { status: 201, headers: { "Content-Type": "application/json" } }

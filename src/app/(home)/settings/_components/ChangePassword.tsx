@@ -51,8 +51,6 @@ export const ChangePassword = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-
     const response = await axios.patch("/api/password", values);
     if (response.status !== 201) {
       toast.error(response.data.message);

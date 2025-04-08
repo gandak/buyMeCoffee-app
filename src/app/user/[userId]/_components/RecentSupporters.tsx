@@ -26,7 +26,7 @@ export default function RecentSupporters({
           <Avatar>
             <AvatarImage
               alt=""
-              src={donor.donorImage || "https://github.com/shadcn.png"}
+              src={donor.donorImage || "/guestDefault.svg"}
               className="rounded-full object-cover"
             />
             <AvatarFallback>MN</AvatarFallback>
@@ -45,7 +45,6 @@ export default function RecentSupporters({
         </div>
       ))}
 
-      {/* Show "See more" button only if there are more donors to show */}
       {hasMoreDonors && !showMore && (
         <Button
           variant="ghost"

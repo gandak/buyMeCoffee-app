@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import type { UserType } from "@/utils/types";
+import type { Profile, UserType } from "@/utils/types";
 import { useUser } from "@/app/_context/UserContext";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,9 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { EditProfilebutton } from "./_components/EditProfilebutton";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
+import axios from "axios";
+import { BackgroundImage } from "./_components/BackgroundImage";
 
 const formSchema = z.object({
   amount: z.string({
@@ -51,10 +54,12 @@ const formSchema = z.object({
   donorid: z.number({
     message: "Special message must be at least 2 characters.",
   }),
+  donorImage: z.string(),
 });
 
 const userProfile = () => {
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [receiverId, setReceiverId] = useState<number>(0);
   const [formValues, setFormValues] = useState<z.infer<
     typeof formSchema
@@ -68,13 +73,27 @@ const userProfile = () => {
       specialmessage: "",
       recipientid: 0,
       donorid: 0,
+      donorImage: "",
     },
   });
 
   const { user, loggedUser } = useUser() as {
     user: UserType | null;
-    loggedUser: { id: number } | null;
+    loggedUser: { id: number; profile: Profile } | null;
   };
+
+  useEffect(() => {
+    if (user !== null) {
+      setIsLoading(false);
+    }
+  }, [user]);
+
+  if (isLoading)
+    return (
+      <div className="w-screen h-screen flex justify-center items-center">
+        <p className="text-lg font-semibold">Loading user profile...</p>
+      </div>
+    );
 
   if (!user)
     return (
@@ -91,61 +110,32 @@ const userProfile = () => {
   function onValidateForm(values: z.infer<typeof formSchema>) {
     if (loggedUser) values.donorid = loggedUser.id;
     values.recipientid = user?.id ?? 0;
+    values.donorImage = loggedUser?.profile.avatarImage || "/guestDefault.svg";
     setFormValues(values);
     setOpen(true);
   }
 
   async function onFinalSubmit() {
     if (formValues) {
-      console.log("Values:", formValues);
-
-      const response = await fetch(`/api/donation`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          amount: formValues.amount,
-          donorid: formValues.donorid,
-          recipientid: formValues.recipientid,
-          socialMediaURL: formValues.socialMediaURL,
-          specialmessage: formValues.specialmessage,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to complete profile data");
+      const response = await axios.post("/api/donation", formValues);
+      if (response.status !== 201) {
+        toast.error(response.data.message);
+        return;
       }
-
-      const data = await response.json();
-      console.log("User profile data:", data);
-
-      if (data.error) {
-        console.error(data.error);
+      if (response.status === 201) {
+        toast.success("Donation successful! Thank you for your support!");
+        setLoading(true);
       } else {
         setLoading(false);
       }
     }
-
     setOpen(false);
     form.reset();
   }
 
   return (
     <div className="flex items-center flex-col gap-6  pt-6 ">
-      <div>
-        {user?.profile.coverImg ? (
-          <Image
-            alt="cover"
-            src={user?.profile.coverImg || "/placeholder.svg"}
-            width={1920}
-            height={1080}
-            style={{ width: "100vw", height: "320px", objectFit: "cover" }} // For display size
-          />
-        ) : (
-          <div className=" w-screen h-[320px] bg-[#4FBDA1]"></div>
-        )}
-      </div>
+      <BackgroundImage />
       <div className="flex gap-4 max-w-[1264px] w-full items-start absolute mt-60 rounded-md p-6">
         <div className="w-[50%] flex flex-col gap-4">
           <div className="w-full flex flex-col gap-4 bg-white rounded-lg border-1">

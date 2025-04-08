@@ -3,8 +3,14 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: Request): Promise<NextResponse> {
   try {
-    const { amount, recipientid, donorid, specialmessage, socialMediaURL } =
-      await req.json();
+    const {
+      amount,
+      recipientid,
+      donorid,
+      specialmessage,
+      socialMediaURL,
+      donorImage,
+    } = await req.json();
 
     const findUserQuery = `SELECT * FROM "Users" WHERE id = $1`;
 
@@ -28,8 +34,8 @@ export async function POST(req: Request): Promise<NextResponse> {
     }
 
     const updateDonorCardQuery = `
-      INSERT INTO "Donations" ("amount", "recipientid", "donorid", "donorname", "specialmessage", "socialurlorbuymeacoffee")
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO "Donations" ("amount", "recipientid", "donorid", "donorname", "specialmessage", "socialurlorbuymeacoffee", "donorimage")
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *`;
 
     const donation = await runQuery(updateDonorCardQuery, [
@@ -39,9 +45,8 @@ export async function POST(req: Request): Promise<NextResponse> {
       donorname,
       specialmessage,
       socialMediaURL,
+      donorImage,
     ]);
-
-    console.log("donation:", donation);
 
     return new NextResponse(
       JSON.stringify({

@@ -37,7 +37,6 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
       const storedUser = localStorage.getItem("userId");
 
       const fetchLoggedUser = async () => {
-        console.log("loggeduser:", loggedUser);
         if (storedUser) {
           try {
             const response = await fetch(`/api/users/${storedUser}`, {

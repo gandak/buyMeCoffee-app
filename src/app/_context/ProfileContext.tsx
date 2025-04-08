@@ -8,6 +8,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { toast } from "sonner";
 
 type profileContextType = {
   completeProfileData: (values: {
@@ -37,9 +38,12 @@ const ProfileProvider = ({ children }: { children: ReactNode }) => {
     socialMediaURL: string;
     userId: string;
   }) => {
-    const response = await axios.patch(`/api/profile`, values);
-
-    console.log("User profile data:", response);
+    const response = await axios.put(`/api/profile`, values);
+    if (response.status !== 201) {
+      toast.error(response.data.message);
+      return;
+    }
+    toast(response.data.message);
   };
 
   return (
