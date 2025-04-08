@@ -27,12 +27,12 @@ export async function POST(req: Request): Promise<NextResponse> {
       donorname = donorUser[0].username;
     }
 
-    const updateBankCardQuery = `
+    const updateDonorCardQuery = `
       INSERT INTO "Donations" ("amount", "recipientid", "donorid", "donorname", "specialmessage", "socialurlorbuymeacoffee")
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *`;
 
-    const donation = await runQuery(updateBankCardQuery, [
+    const donation = await runQuery(updateDonorCardQuery, [
       amount,
       recipientid,
       donorid,

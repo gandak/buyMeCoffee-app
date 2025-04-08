@@ -28,6 +28,8 @@ export type Profile = {
 };
 
 export type BankCard = {
+  expiryYear: string | undefined;
+  expiryMonth: string | undefined;
   id: number;
   country: string;
   firstName: string;
@@ -35,6 +37,9 @@ export type BankCard = {
   cardNumber: string;
   expiryDate: string;
   userId: number;
+  cvc: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type UserType = {
@@ -44,5 +49,5 @@ export type UserType = {
   username: string;
   donations: DonationType[] | null;
   profile: Profile;
-  bankCard: BankCard[];
+  bankcard: BankCard;
 };

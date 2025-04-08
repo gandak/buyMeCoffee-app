@@ -10,6 +10,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import router from "next/router";
 
 type UserContextType = {
   loginUser: (email: string, password: string) => void;
@@ -125,7 +126,6 @@ const UsersProvider = ({ children }: { children: ReactNode }) => {
         setUser(null);
       }
     };
-
     if (params?.userId) {
       fetchUserById();
     }
