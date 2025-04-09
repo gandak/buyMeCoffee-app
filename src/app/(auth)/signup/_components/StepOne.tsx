@@ -1,14 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import React, {
-  ChangeEventHandler,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -23,7 +16,6 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { checkUsername } from "@/utils/checkUsername";
 
 export const usernameValidation = z
   .string()
@@ -39,7 +31,6 @@ const formSchema = z.object({
 });
 
 export const StepOne = ({ currentStep }: { currentStep: number }) => {
-  // const [isAvailable, setIsAvailable] = useState<boolean>(true);
   const [username, setUsername] = useState<string>("");
   const router = useRouter();
 
@@ -58,12 +49,8 @@ export const StepOne = ({ currentStep }: { currentStep: number }) => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // const result = checkUsername(values.username);
-    // if (result) setIsAvailable(!isAvailable);
-    // if (!result) {
     localStorage.setItem("username", values.username);
     router.push(`?step=${currentStep + 1}`);
-    // }
   }
 
   return (
@@ -87,13 +74,7 @@ export const StepOne = ({ currentStep }: { currentStep: number }) => {
               <FormControl>
                 <Input placeholder="Enter username here" {...field} />
               </FormControl>
-              {/* {isAvailable ? (
-                ""
-              ) : (
-                <p className="text-[12px] text-red-500">
-                  Username not availabe
-                </p>
-              )} */}
+
               <FormMessage />
             </FormItem>
           )}

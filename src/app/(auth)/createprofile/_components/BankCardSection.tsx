@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
+import { useBankCard } from "@/app/_context/BankCardContext";
 
 const formSchema = z.object({
   country: z.string(),
@@ -36,8 +37,10 @@ const formSchema = z.object({
   }),
 });
 
-export const PaidSection = ({ currentStep }: { currentStep: number }) => {
+export const PaidSection = () => {
   const router = useRouter();
+
+  const { completeBankCardData } = useBankCard();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,7 +56,15 @@ export const PaidSection = ({ currentStep }: { currentStep: number }) => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    completeBankCardData(values);
+    completeBankCardData({
+      country: values.country,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      cardNumber: values.cardNumber,
+      month: values.expiryMonth,
+      year: values.expiryYear,
+      cvc: values.cvc,
+    });
     router.push(`/`);
   }
 
@@ -229,14 +240,3 @@ export const PaidSection = ({ currentStep }: { currentStep: number }) => {
     </div>
   );
 };
-function completeBankCardData(values: {
-  country: string;
-  firstName: string;
-  lastName: string;
-  cardNumber: string;
-  expiryMonth: string;
-  expiryYear: string;
-  cvc: string;
-}) {
-  throw new Error("Function not implemented.");
-}

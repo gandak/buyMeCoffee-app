@@ -1,5 +1,5 @@
 import { runQuery } from "@/utils/queryService";
-import { type NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request): Promise<NextResponse> {
   try {

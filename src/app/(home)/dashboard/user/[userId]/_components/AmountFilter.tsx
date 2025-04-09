@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -38,9 +38,6 @@ export const AmountEarnings = ({
   selectedAmounts: string[];
   setSelectedAmounts: Dispatch<SetStateAction<string[]>>;
 }) => {
-  // const [selectedAmounts, setSelectedAmounts] = useState<string[]>([]);
-
-  // Handle checkbox change
   const handleCheckboxChange = (id: string, checked: boolean) => {
     if (checked) {
       setSelectedAmounts([...selectedAmounts, id]);
@@ -59,7 +56,6 @@ export const AmountEarnings = ({
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" className="flex items-center gap-2">
-          {/* <Filter className="h-4 w-4" /> */}
           <ChevronDown />
           Amount
         </Button>
@@ -88,6 +84,3 @@ export const AmountEarnings = ({
     </Popover>
   );
 };
-function toast(arg0: { title: string; description: React.JSX.Element }) {
-  throw new Error("Function not implemented.");
-}

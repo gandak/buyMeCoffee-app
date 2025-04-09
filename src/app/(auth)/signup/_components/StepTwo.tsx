@@ -18,6 +18,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox";
+import axios from "axios";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -50,28 +52,19 @@ export const StepTwo = ({ currentStep }: { currentStep: number }) => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const response = await axios.post("/api/signup", {
+      username: username,
+      email: values.email,
+      password: values.password,
+    });
 
-    try {
-      const response = await fetch("http://localhost:3000/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: username,
-          email: values.email,
-          password: values.password,
-        }),
-      });
-
-      const jsonData = await response.json();
-      // router.push(`?step=${currentStep + 1}`);
-      router.push(`/signin`);
-      return jsonData;
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Бүртгэл үүсгэхэд алдаа гарлаа. Дахин оролдоно уу.");
+    if (response.status !== 201) {
+      toast.error(response.data.message);
+      return;
+    }
+    if (response.status === 201) {
+      toast.success(response.data.message);
+      router.push("/signin");
     }
   }
 

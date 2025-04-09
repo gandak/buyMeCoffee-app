@@ -14,7 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 import { useUser } from "@/app/_context/UserContext";
 
 const formSchema = z.object({
@@ -34,11 +33,6 @@ const LoginSection = () => {
       password: "",
     },
   });
-
-  type UserLoginType = {
-    email: string;
-    password: string;
-  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     loginUser(values.email, values.password);

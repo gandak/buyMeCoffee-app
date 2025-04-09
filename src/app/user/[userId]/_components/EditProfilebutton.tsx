@@ -65,15 +65,7 @@ export const EditProfilebutton = () => {
       toast.error(response.data.message);
       return;
     }
-
-    console.log("User profile data:", response.data.message);
     toast(response.data.message);
-
-    // if (data.error) {
-    //   console.error(data.error);
-    // } else {
-    //   setLoading(false);
-    // }
 
     setOpen(false);
     form.reset();

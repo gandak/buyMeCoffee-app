@@ -1,7 +1,7 @@
 import { runQuery } from "@/utils/queryService";
-import { type NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest): Promise<NextResponse> {
+export async function GET(): Promise<NextResponse> {
   try {
     const getAllUser = `SELECT 
                               "Users"."id",

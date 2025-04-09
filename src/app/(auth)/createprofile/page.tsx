@@ -4,12 +4,13 @@ import { CompleteProfile } from "./_components/CompleteProfile";
 import { PaidSection } from "./_components/BankCardSection";
 import { useSearchParams } from "next/navigation";
 
-const profilePage = () => {
-  const searchParams = useSearchParams();
+const ProfilePage = () => {
   const [step, setStep] = useState<number>(0);
 
+  const searchParams = useSearchParams();
+
   useEffect(() => {
-    const getStep = parseInt(searchParams.get("step") || "0", 10);
+    const getStep = parseInt(searchParams?.get("step") || "0", 10);
     setStep(getStep);
   }, [searchParams]);
 
@@ -22,4 +23,4 @@ const profilePage = () => {
   );
 };
 
-export default profilePage;
+export default ProfilePage;

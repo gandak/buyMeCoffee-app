@@ -1,5 +1,6 @@
 "use client";
-import { useParams, useRouter } from "next/navigation";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import {
   createContext,
   type ReactNode,
@@ -7,6 +8,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { toast } from "sonner";
 
 type BankCardContextType = {
   completeBankCardData: (values: {
@@ -26,7 +28,6 @@ const bankCardContext = createContext<BankCardContextType>(
 export const useBankCard = () => useContext(bankCardContext);
 
 const BankCardProvider = ({ children }: { children: ReactNode }) => {
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [storedUserId, setStoredUserId] = useState<string | null>(null);
 
@@ -43,35 +44,18 @@ const BankCardProvider = ({ children }: { children: ReactNode }) => {
     year: string;
     cvc: string;
   }) => {
-    const response = await fetch(`/api/bankcard`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        country: values.country,
-        firstName: values.firstName,
-        lastName: values.lastName,
-        cardNumber: values.cardNumber,
-        month: values.month,
-        year: values.year,
-        cvc: values.cvc,
-        userId: storedUserId,
-      }),
+    const response = await axios.post("api/bankcard", {
+      ...values,
+      storedUserId,
     });
 
-    if (!response.ok) {
-      throw new Error("Failed to complete bank card data");
+    if (response.status !== 201) {
+      toast.error(response.data.message);
+      return;
     }
-
-    const data = await response.json();
-    console.log("User bank card data:", data);
-
-    if (data.error) {
-      console.error(data.error);
-      router.replace("/completeprofile");
-    } else {
-      setLoading(false);
+    if (response.status === 201) {
+      toast.success(response.data.message);
+      router.push("/");
     }
   };
 

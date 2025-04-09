@@ -1,5 +1,5 @@
 import React from "react";
-import { Bold, Coffee, Italic, Underline } from "lucide-react";
+import { Coffee } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 export const Donations = () => {

@@ -1,13 +1,6 @@
 "use client";
 import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
-import {
-  createContext,
-  type ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, type ReactNode, useContext } from "react";
 import { toast } from "sonner";
 
 type profileContextType = {
@@ -26,11 +19,6 @@ const profileContext = createContext<profileContextType>(
 export const useProfile = () => useContext(profileContext);
 
 const ProfileProvider = ({ children }: { children: ReactNode }) => {
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  const params = useParams<{ userId: string }>();
-  const [storedUserId, setStoredUserId] = useState<string | null>(null);
-
   const completeProfileData = async (values: {
     name: string;
     about: string;

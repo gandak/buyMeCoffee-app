@@ -17,11 +17,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Camera, X } from "lucide-react";
 import Image from "next/image";
 import { imageUpload } from "@/utils/imageUpload";
-import { useRouter } from "next/navigation";
 import { useProfile } from "@/app/_context/ProfileContext";
 import { useUser } from "@/app/_context/UserContext";
-import { log } from "console";
-import router from "next/router";
 
 const formSchema = z.object({
   avatarImage: z.string({

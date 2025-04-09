@@ -16,7 +16,7 @@ const Home = () => {
     }
   }, [loggedUser, router]);
 
-  if (!loggedUser) return null;
+  !loggedUser ? null : router.push(`/dashboard/user/${loggedUser.id}`);
 
   return (
     <div className="flex flex-col gap-6 pr-20">

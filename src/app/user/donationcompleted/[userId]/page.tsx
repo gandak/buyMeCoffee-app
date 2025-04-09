@@ -1,9 +1,7 @@
 "use client";
 import { useUser } from "@/app/_context/UserContext";
 import { CircleCheck } from "lucide-react";
-import { useParams, useSearchParams } from "next/navigation";
 import React from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

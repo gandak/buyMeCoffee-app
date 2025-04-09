@@ -25,7 +25,6 @@ import {
 import { useRouter } from "next/navigation";
 import { useUser } from "@/app/_context/UserContext";
 import { useBankCard } from "@/app/_context/BankCardContext";
-import { log } from "console";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -43,9 +42,7 @@ const formSchema = z.object({
 });
 
 export const ChangePaymentInfo = () => {
-  const router = useRouter();
   const { loggedUser } = useUser();
-  const { completeBankCardData } = useBankCard();
 
   if (!loggedUser) return;
 
